@@ -19,6 +19,6 @@ sudo apt-get udpate
 sudo apt-get install -y docker.io
 ```
 
-> Configure VSCode to remote connect to vm
-> Configuring PostgreSQL DB ?  WIP
-> Configuring Terraform
+- Configure VSCode to remote connect to vm
+- Configuring PostgreSQL DB ?  WIP
+- Configuring Terraform
