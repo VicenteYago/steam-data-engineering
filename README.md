@@ -1,5 +1,7 @@
 # steam-data-engineering
 
+## Compute engine instance
+
 Create compute engine instance: 
 
 ```{bash}
@@ -10,3 +12,13 @@ Connect
 ```{bash}
 ssh -i ~/.ssh/gcp  vyago-gcp@34.175.119.173
 ```
+
+Inside vm:
+```{bash}
+sudo apt-get udpate
+sudo apt-get install -y docker.io
+```
+
+Configuring PostgreSQL DB ? 
+WIP
+
