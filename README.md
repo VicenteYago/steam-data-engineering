@@ -28,3 +28,12 @@ sudo apt-get install -y docker.io
 - Configure VSCode to remote connect to vm
 - Configuring PostgreSQL DB ?  WIP
 - Configuring Terraform
+
+
+
+
+
+
+
+## Resources
+- https://www.kaggle.com/datasets/souyama/steam-dataset
