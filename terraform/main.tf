@@ -17,7 +17,7 @@ provider "google" {
 # Data Lake Bucket
 # Ref: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket
 resource "google_storage_bucket" "data-lake-bucket" {
-  name     = "${local.data_lake_bucket}_${var.project}" # Concatenating DL bucket & Project name for unique naming
+  name     = "steam-de-data-lake-bucket" # Concatenating DL bucket & Project name for unique naming
   location = var.region
 
   # Optional, but recommended settings:
