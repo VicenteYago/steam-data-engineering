@@ -1,5 +1,11 @@
 # steam-data-engineering
 
+## Set up postgresSQL
+
+```{bash}
+docker-compose up 
+```
+
 ## Compute engine instance
 
 Create compute engine instance: 
