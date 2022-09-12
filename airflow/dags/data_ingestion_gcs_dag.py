@@ -5,28 +5,21 @@ from airflow import DAG
 from airflow.utils.dates import days_ago
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
-
+from airflow.providers.google.cloud.hooks.gcs import GCSHook
 from google.cloud import storage
-from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
-import pyarrow.csv as pv
-import pyarrow.parquet as pq
 
 
+AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BUCKET = os.environ.get("GCP_GCS_BUCKET")
-
-#dataset_file = "yellow_tripdata_2021-01.csv"
-#dataset_url = f"https://s3.amazonaws.com/nyc-tlc/trip+data/{dataset_file}"
-path_to_local_home = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
-#parquet_file = dataset_file.replace('.csv', '.parquet')
-#BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'trips_data_all')
+DATASET_ZIP = os.path.join(AIRFLOW_HOME, "steam-dataset.zip")
+DATASET_DIR = os.path.join(AIRFLOW_HOME, "dataset/")
 
 
+GCS_DIR = "raw"
 
 
-
-# NOTE: takes 20 mins, at an upload speed of 800kbps. Faster if your internet has a better upload speed
-def upload_to_gcs(bucket, object_name, local_file):
+def upload_to_gcs(bucket_name, local_dir):
     """
     Ref: https://cloud.google.com/storage/docs/uploading-objects#storage-upload-object-python
     :param bucket: GCS bucket name
@@ -34,17 +27,14 @@ def upload_to_gcs(bucket, object_name, local_file):
     :param local_file: source path & file-name
     :return:
     """
-    # WORKAROUND to prevent timeout for files > 6 MB on 800 kbps upload speed.
-    # (Ref: https://github.com/googleapis/python-storage/issues/74)
-    storage.blob._MAX_MULTIPART_SIZE = 5 * 1024 * 1024  # 5 MB
-    storage.blob._DEFAULT_CHUNKSIZE = 5 * 1024 * 1024  # 5 MB
-    # End of Workaround
 
-    client = storage.Client()
-    bucket = client.bucket(bucket)
-
-    blob = bucket.blob(object_name)
-    blob.upload_from_filename(local_file)
+    hook = GCSHook()
+    for path, currentDirectory, files in os.walk(local_dir):
+        for file in files:
+            file_path = os.path.join(path, file)
+            hook.upload(bucket_name = bucket_name,
+                        filename = file_path,
+                        object_name = os.path.relpath(file_path, local_dir))
 
 
 default_args = {
@@ -66,27 +56,30 @@ with DAG(
 
     download_dataset_task = BashOperator(
         task_id="download_dataset_task",
-        bash_command=f"kaggle datasets download -d souyama/steam-dataset"
+        bash_command=f"kaggle datasets download -d souyama/steam-dataset && cp steam-dataset.zip {AIRFLOW_HOME}"
     )
 
 
     unzip_dataset_task = BashOperator(
         task_id="unzip_dataset_task",
-        bash_command=f"unzip steam-dataset.zip"
+        bash_command=f"unzip {DATASET_ZIP} -d {DATASET_DIR}"
     )
 
-    # TODO: Homework - research and try XCOM to communicate output values between 2 tasks/operators
     local_to_gcs_task = PythonOperator(
         task_id="local_to_gcs_task",
         python_callable=upload_to_gcs,
         op_kwargs={
-            "bucket": BUCKET,
-            #"object_name": f"raw/{parquet_file}",
-            "object_name": f"raw/steamspy_basic.json",
-            #"local_file": f"{path_to_local_home}/{parquet_file}",
-            "local_file": f"{path_to_local_home}steam_dataset/steamspy/basic/steam_spy_scrap.json",
+            "bucket_name": BUCKET,
+            "local_dir": os.path.dirname(DATASET_DIR)
         },
     )
 
 
-    download_dataset_task >> unzip_dataset_task >> local_to_gcs_task
+    rm_task = BashOperator(
+        task_id='remove_files_from_local',
+        bash_command=f'rm -rf {DATASET_ZIP} {DATASET_DIR}',
+        trigger_rule="all_done"
+
+    )
+
+    download_dataset_task >> unzip_dataset_task >> local_to_gcs_task >> rm_task

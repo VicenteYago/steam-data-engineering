@@ -11,7 +11,7 @@ variable "project" {
 
 variable "credentials" {
   description = "JSON service account credentials"
-  default     = "./steam-data-engineering-gcp-4b13e3c4ba08.json"
+  default     = "/home/vyago/.google/credentials/google_credentials.json"
   type        = string
 }
 
