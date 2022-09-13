@@ -28,8 +28,8 @@ def format_to_parquet(local_dir):
                 file_path = os.path.join(path, file)
                 file_path_parquet = file_path.replace('.json', '.parquet')
                 ddf = dd.read_json(file_path, orient='index')
-                ddf = ddf.astype('string')
-                ddf.to_parquet(file_path_parquet, compression='snappy')
+                ddf = ddf.astype('string') #TODO adequate casting?
+                ddf.to_parquet(file_path_parquet, compression='snappy') #TODO its creating an odd folder for each .parquet file
 
 
 def upload_to_gcs(bucket_name, local_dir):
@@ -58,7 +58,6 @@ default_args = {
     "retries": 1,
 }
 
-# NOTE: DAG declaration - using a Context Manager (an implicit way)
 with DAG(
     dag_id="data_ingestion_gcs_dag",
     schedule_interval="@daily",
@@ -100,6 +99,7 @@ with DAG(
         }
     )
 
+    #TODO
     """"
     bigquery_external_table_task = BigQueryCreateExternalTableOperator(
         task_id="bigquery_external_table_task",
