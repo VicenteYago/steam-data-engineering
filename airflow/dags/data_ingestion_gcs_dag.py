@@ -1,5 +1,4 @@
 import os
-import logging
 import dask.dataframe as dd
 
 from airflow import DAG
@@ -15,21 +14,20 @@ PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BUCKET = os.environ.get("GCP_GCS_BUCKET")
 DATASET_ZIP = os.path.join(AIRFLOW_HOME, "steam-dataset.zip")
 DATASET_DIR = os.path.join(AIRFLOW_HOME, "dataset/")
-
-
+BIGQUERY_DATASET = os.environ.get('BIGQUERY_DATASET', 'steam_stg')
 GCS_DIR = "raw"
 
 
 def format_to_parquet(local_dir):
 
-    for path, currentDirectory, files in os.walk(local_dir):
+    for path, _, files in os.walk(local_dir):
         for file in files:
             if file.endswith(".json"):
                 file_path = os.path.join(path, file)
                 file_path_parquet = file_path.replace('.json', '.parquet')
                 ddf = dd.read_json(file_path, orient='index')
                 ddf = ddf.astype('string') #TODO adequate casting?
-                ddf.to_parquet(file_path_parquet, compression='snappy') #TODO its creating an odd folder for each .parquet file
+                ddf.to_parquet(file_path_parquet, compression='snappy')
 
 
 def upload_to_gcs(bucket_name, local_dir):
@@ -99,23 +97,26 @@ with DAG(
         }
     )
 
-    #TODO
-    """"
-    bigquery_external_table_task = BigQueryCreateExternalTableOperator(
-        task_id="bigquery_external_table_task",
-        table_resource={
-            "tableReference": {
-                "projectId": PROJECT_ID,
-                "datasetId": BIGQUERY_DATASET,
-                "tableId": "external_table",
-            },
-            "externalDataConfiguration": {
-                "sourceFormat": "PARQUET",
-                "sourceUris": [f"gs://{BUCKET}/raw/{parquet_file}"],
-            },
-        },
-    )
-    """
+    hook = GCSHook()
+    bq_parallel_tasks = list()
+    gcs_objs_list = hook.list(bucket_name = BUCKET)
+    for obj in gcs_objs_list: 
+        TABLE_NAME = obj.split("/")[-2].replace('.parquet', '')
+        bigquery_external_table_task = BigQueryCreateExternalTableOperator(
+            task_id=f"bigquery_external_table_{TABLE_NAME}_task",
+            table_resource={
+                "tableReference": {
+                    "projectId": PROJECT_ID,
+                    "datasetId": BIGQUERY_DATASET,
+                    "tableId": TABLE_NAME,
+                },
+                "externalDataConfiguration": {
+                    "sourceFormat": "PARQUET",
+                    "sourceUris": [f"gs://{BUCKET}/{obj}"]
+                },
+            }
+        )
+        bq_parallel_tasks.append(bigquery_external_table_task)
 
     rm_task = BashOperator(
         task_id='remove_files_from_local',
@@ -123,4 +124,4 @@ with DAG(
         trigger_rule="all_done"
     )
 
-    download_dataset_task >> unzip_dataset_task >> rm_files_task >> format_to_parquet_task >> local_to_gcs_task >> rm_task
+    download_dataset_task >> unzip_dataset_task >> rm_files_task >> format_to_parquet_task >> local_to_gcs_task >> bq_parallel_tasks >> rm_task

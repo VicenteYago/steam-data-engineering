@@ -25,3 +25,9 @@ variable "storage_class" {
   description = "Storage class type for your bucket. Check official docs for more info."
   default     = "STANDARD"
 }
+
+variable "stg_bq_dataset" {
+  description = "Storage class type for your bucket. Check official docs for more info."
+  default     = "steam_stg"
+  type        = string
+}
