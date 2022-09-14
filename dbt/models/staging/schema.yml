@@ -1,0 +1,28 @@
+version: 2
+
+sources : 
+    - name: staging
+      description: ni idea de que poner en la descripcion
+      database: steam-data-engineering-gcp
+      schema: steam_stg
+      tables: 
+        - name : steam_spy_scrap
+          columns:
+            - name: appid
+            - name: name 
+            - name: developer
+            - name: publisher
+            - name: score_rank
+            - name: negative
+            - name: positive
+            - name: userscore
+            - name: owners
+            - name: average_forever
+            - name: average_2weeks
+            - name: median_forever
+            - name: median_2weeks
+            - name: price
+            - name: initialprice
+            - name: discount
+            - name: ccu
+            - name: __null_dask_index__
