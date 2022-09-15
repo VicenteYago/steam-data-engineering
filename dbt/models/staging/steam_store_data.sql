@@ -10,16 +10,20 @@ SELECT
    SAFE_CAST(is_free as BOOL) as is_free,
    JSON_QUERY_ARRAY(developers) as developers,
    JSON_QUERY_ARRAY(publishers) as publishers,
-   JSON_EXTRACT({{ fix_bools('platforms') }}, '$.windows') as platform_windows,
-   JSON_EXTRACT({{ fix_bools('platforms') }}, '$.mac') as platform_mac,
-   JSON_EXTRACT({{ fix_bools('platforms') }}, '$.linux') as platform_linux,
+
+   CAST(JSON_EXTRACT({{ fix_bools('platforms') }}, '$.windows') as boolean) as platform_windows,
+   CAST(JSON_EXTRACT({{ fix_bools('platforms') }}, '$.mac') as boolean) as platform_mac,
+   CAST(JSON_EXTRACT({{ fix_bools('platforms') }}, '$.linux') as boolean) as platform_linux,
+   
    JSON_EXTRACT(metacritic, '$.score') as metacritic, 
    JSON_EXTRACT(recommendations, '$.total') as num_recommendations, 
-   JSON_EXTRACT({{ fix_bools('release_date') }}, '$.coming_soon') as coming_soon,
-   JSON_EXTRACT( {{ fix_bools('release_date') }}, '$.date') as release_date, --todo
-   controller_support,
+
+   CAST(JSON_EXTRACT({{ fix_bools('release_date') }}, '$.coming_soon') as boolean) as coming_soon,
+   CAST(REGEXP_EXTRACT(JSON_EXTRACT( {{ fix_bools('release_date') }}, '$.date'), r"(\d\d\d\d)") as integer) as release_year,
+   CASE WHEN controller_support = 'full' THEN TRUE 
+             ELSE FALSE END as controller_support,
    drm_notice,
-   JSON_EXTRACT(TRIM(demos, '[]'), '$.appid') as demos_appid
+   CAST(JSON_EXTRACT(TRIM(demos, '[]'), '$.appid') as integer) as demos_appid
 
 
 FROM {{source('staging', 'steam_store_data')}}
