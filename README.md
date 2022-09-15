@@ -1,4 +1,4 @@
-# steam-data-engineering
+# Steam Data Engineering
 
 ## Description
 
