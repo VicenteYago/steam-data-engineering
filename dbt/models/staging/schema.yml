@@ -26,3 +26,48 @@ sources :
             - name: discount
             - name: ccu
             - name: __null_dask_index__
+        - name : steam_store_data
+          columns : 
+            - name: type
+            - name: name
+            - name: steam_appid 
+            - name: required_age
+            - name: is_free
+            - name: dlc
+            - name: detailed_description
+            - name: about_the_game
+            - name: short_description
+            - name: supported_languages
+            - name: reviews
+            - name: header_image
+            - name: website
+            - name: pc_requirements
+            - name: mac_requirements
+            - name: linux_requirements
+            - name: developers
+            - name: publishers
+            - name: packages
+            - name: package_groups
+            - name: platforms
+            - name: metacritic
+            - name: categories
+            - name: genres
+            - name: screenshots
+            - name: movies
+            - name: recommendations
+            - name: release_date
+            - name: support_info
+            - name: background
+            - name: background_raw
+            - name: content_descriptors
+            - name: controller_support
+            - name: achievements
+            - name: legal_notice
+            - name: drm_notice
+            - name: price_overview
+            - name: ext_user_account_notice
+            - name: demos
+            - name: _null_dask_index__
+models: 
+  - name: steam_spy_scrap
+  - name: steam_store_data
