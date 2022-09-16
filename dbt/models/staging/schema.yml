@@ -68,6 +68,62 @@ sources :
             - name: ext_user_account_notice
             - name: demos
             - name: _null_dask_index__
+        - name: steam_dlc_data
+          columns: 
+            - name: type			
+            - name: name			
+            - name: steam_appid			
+            - name: required_age			
+            - name: is_free 	
+            - name: detailed_description			
+            - name: about_the_game			
+            - name: short_description 		
+            - name: fullgame			
+            - name: supported_languages		
+            - name: header_image				
+            - name: website			
+            - name: pc_requirements				
+            - name: mac_requirements				
+            - name: linux_requirements				
+            - name: legal_notice				
+            - name: developers				
+            - name: publishers			
+            - name: price_overview				
+            - name: packages			
+            - name: package_groups				
+            - name: platforms				
+            - name: categories 			
+            - name: genres		
+            - name: screenshots				
+            - name: release_date				
+            - name: support_info				
+            - name: background				
+            - name: background_raw			
+            - name: content_descriptors		
+            - name: recommendations			
+            - name: movies				
+            - name: controller_support			
+            - name: reviews				
+            - name: metacritic		
+            - name: drm_notice			
+            - name: demos					
+            - name: achievements					
+            - name: dlc					
+            - name: __null_dask_index__
+        - name: categories
+    - name: development
+      description: ni idea de que poner en la descripcion
+      database: steam-data-engineering-gcp
+      schema: dbt_development
+      tables: 
+        - name : categories
+        - name : genres
 models: 
   - name: steam_spy_scrap
   - name: steam_store_data
+  - name: steam_dlc_data
+  - name: categories
+  - name: genres
+
+
+
