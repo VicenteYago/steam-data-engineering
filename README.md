@@ -18,6 +18,14 @@ This project creates a pipeline for processing and analyze the raw data scraped 
 The dataset is originary from [**Kaggle**](), a repository of free datasets for data science. The dataset is composed as a mix of directly scraped records from **Steam** itself and [**Steamspy**]() a website dedicated to collect actual and speculative data about the former platform. All the files are enconded as raw jsons and need and extensive work of transformation in order to make then usable.
 
 ### Tools & Technologies
+* Cloud - [**Google Cloud Platform**]()
+* Infraestructure as Code - [**Terraform**]()
+* Containerization - [**Docker**](), [**Docker Compose**]()
+* Orchestration - [**Airflow**]()
+* Transformation - [**dbt**]()
+* Data Lake - [**Google Cloud Storage**]()
+* Data Visualization - [**Data Studio**]()
+* Language - [**Python**]()
 
 ### Architecture
 
