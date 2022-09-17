@@ -1,5 +1,7 @@
 {{ config(materialized='table') }}
 
+
+
 SELECT steam_store_data.appid,
        steam_store_data.type,
        steam_store_data.name,
@@ -14,12 +16,13 @@ SELECT steam_store_data.appid,
        steam_store_data.controller_support,
        steam_store_data.demos_appid,
        steam_store_data.drm_notice,
-
+       steam_store_data.recommendations,
+       STRUCT <name ARRAY<string>, id ARRAY<integer>>(steam_store_data.categories_name, steam_store_data.categories_id) as categories,
+       STRUCT <name ARRAY<string>, id ARRAY<integer>>(steam_store_data.genres_name, steam_store_data.genres_id) as genres,
        STRUCT<low integer, high integer>(steam_spy_scrap.owners_low, steam_spy_scrap.owners_high) as owners,
        STRUCT<windows boolean,
               mac     boolean,
               linux   boolean>(steam_store_data.platform_windows, steam_store_data.platform_mac, steam_store_data.platform_linux) as platforms,
-
        steam_spy_scrap.negative,
        steam_spy_scrap.positive,
        steam_spy_scrap.price,
@@ -27,5 +30,5 @@ SELECT steam_store_data.appid,
        steam_spy_scrap.discount_percentage,
        steam_spy_scrap.ccu
 
-  FROM {{ref('steam_store_data')}} as steam_store_data JOIN  
+  FROM {{ref('steam_store_data')}} as steam_store_data LEFT JOIN  
        {{ref('steam_spy_scrap')}}  as steam_spy_scrap ON steam_spy_scrap.appid = steam_store_data.appid
