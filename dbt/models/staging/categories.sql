@@ -12,7 +12,7 @@ FROM {{source('staging', 'steam_store_data')}} as original
                 CAST(JSON_QUERY(categories, '$.description') as string) as categories_name,
                 CAST(JSON_QUERY(categories, '$.id') as integer) as categories_id
 
-            from `steam-data-engineering-gcp.steam_stg.steam_store_data`,
+            from {{source('staging', 'steam_store_data')}},
                 unnest(json_query_array(categories)) as categories
             ) fixed ON original.steam_appid = fixed.steam_appid
 

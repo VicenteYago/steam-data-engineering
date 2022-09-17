@@ -4,12 +4,12 @@
 SELECT
    type, 
    name, 
-   SAFE_CAST(steam_store_data.steam_appid as integer) as appid, 
+   SAFE_CAST(ssd.steam_appid as integer) as appid, 
    JSON_QUERY_ARRAY(dlc) as dlcs,
    SAFE_CAST(required_age as integer) as required_age,
    SAFE_CAST(is_free as BOOL) as is_free,
-   JSON_QUERY_ARRAY(developers) as developers,
-   JSON_QUERY_ARRAY(publishers) as publishers,
+   JSON_EXTRACT_STRING_ARRAY(developers) as developers,
+   JSON_EXTRACT_STRING_ARRAY(publishers) as publishers,
 
    CAST(JSON_EXTRACT({{ fix_bools('platforms') }}, '$.windows') as boolean) as platform_windows,
    CAST(JSON_EXTRACT({{ fix_bools('platforms') }}, '$.mac') as boolean) as platform_mac,
@@ -30,12 +30,8 @@ SELECT
    genres.genres_name as genres_name,
    genres.genres_id as genres_id
 
-FROM {{source('staging', 'steam_store_data')}} as steam_store_data 
-
-         LEFT JOIN {{source('development', 'categories')}} as categories
-               ON CAST( steam_store_data.steam_appid as integer) = categories.appid
-
-                LEFT JOIN {{source('development', 'genres')}} as genres
-                     ON CAST( steam_store_data.steam_appid as integer) = categories.appid
-
+FROM ({{source('staging', 'steam_store_data')}} ssd LEFT JOIN
+     {{source('development', 'genres')}} genres ON CAST(ssd.steam_appid as integer) = genres.appid)  
+     LEFT JOIN {{source('development', 'categories')}} categories ON genres.appid = categories.appid
+       
 

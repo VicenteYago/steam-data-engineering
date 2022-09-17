@@ -9,10 +9,10 @@ FROM {{source('staging', 'steam_store_data')}} as original
             (
             select 
                 steam_appid,
-                SAFE_CAST(JSON_QUERY(genres, '$.description') as string) as genres_name,
+                JSON_EXTRACT_SCALAR(genres, '$.description') as genres_name,
                 CAST( REGEXP_EXTRACT(genres, r"(\d+)") as integer) as genres_id 
 
-            from `steam-data-engineering-gcp.steam_stg.steam_store_data`,
+            from {{source('staging', 'steam_store_data')}},
                 unnest(json_query_array(genres)) as genres
             ) fixed ON original.steam_appid = fixed.steam_appid
 
