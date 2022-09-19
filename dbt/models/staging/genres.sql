@@ -1,8 +1,9 @@
 {{ config(materialized='view') }}
 
 select CAST(original.steam_appid as integer ) as appid,
-       ARRAY_AGG(fixed.genres_name IGNORE NULLS) as genres_name ,
-       ARRAY_AGG(fixed.genres_id IGNORE NULLS) as genres_id
+        STRUCT <name ARRAY<STRING>,
+                id   ARRAY<INTEGER>> (ARRAY_AGG(fixed.genres_name),
+                                      ARRAY_AGG(fixed.genres_id)) as genres
 
 FROM {{source('staging', 'steam_store_data')}} as original
        JOIN 

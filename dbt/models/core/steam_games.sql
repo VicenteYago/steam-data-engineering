@@ -17,9 +17,11 @@ SELECT steam_store_data.appid,
        steam_store_data.demos_appid,
        steam_store_data.drm_notice,
        steam_store_data.recommendations,
-       STRUCT <name ARRAY<string>, id ARRAY<integer>>(steam_store_data.categories_name, steam_store_data.categories_id) as categories,
-       STRUCT <name ARRAY<string>, id ARRAY<integer>>(steam_store_data.genres_name, steam_store_data.genres_id) as genres,
+       steam_store_data.categories as categories,
+       steam_store_data.genres as genres,
        STRUCT<low integer, high integer>(steam_spy_scrap.owners_low, steam_spy_scrap.owners_high) as owners,
+       STRUCT<low decimal, high decimal> (steam_spy_scrap.owners_low * steam_spy_scrap.price,
+                                      steam_spy_scrap.owners_high*steam_spy_scrap.price) as revenue,
        STRUCT<windows boolean,
               mac     boolean,
               linux   boolean>(steam_store_data.platform_windows, steam_store_data.platform_mac, steam_store_data.platform_linux) as platforms,
@@ -28,7 +30,9 @@ SELECT steam_store_data.appid,
        steam_spy_scrap.price,
        steam_spy_scrap.initialprice,
        steam_spy_scrap.discount_percentage,
+       
        steam_spy_scrap.ccu
 
-  FROM {{ref('steam_store_data')}} as steam_store_data LEFT JOIN  
-       {{ref('steam_spy_scrap')}}  as steam_spy_scrap ON steam_spy_scrap.appid = steam_store_data.appid
+FROM {{ref('steam_store_data')}} as steam_store_data LEFT JOIN  
+          {{ref('steam_spy_scrap')}}  as steam_spy_scrap ON steam_spy_scrap.appid = steam_store_data.appid
+WHERE release_year <=2025
