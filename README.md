@@ -1,39 +1,42 @@
-# steam-data-engineering
+# Steam Data Engineering
 
-## Set up postgresSQL
-
-```{bash}
-docker-compose up 
-```
-
-## Compute engine instance
-
-Create compute engine instance: 
-
-```{bash}
-gcloud compute instances create steam-de --project=steam-data-engineering-gcp --zone=europe-southwest1-a --machine-type=e2-medium --network-interface=network-tier=PREMIUM,subnet=default --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=146724372394-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --create-disk=auto-delete=yes,boot=yes,device-name=steam-de,image=projects/ubuntu-os-cloud/global/images/ubuntu-1804-bionic-v20220901,mode=rw,size=30,type=projects/steam-data-engineering-gcp/zones/europe-southwest1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --reservation-affinity=any
-```
-Connect
-
-```{bash}
-ssh -i ~/.ssh/gcp  vyago-gcp@34.175.119.173
-```
-
-Inside vm:
-```{bash}
-sudo apt-get udpate
-sudo apt-get install -y docker.io
-```
-
-- Configure VSCode to remote connect to vm
-- Configuring PostgreSQL DB ?  WIP
-- Configuring Terraform
+<p align="center">
+<img src="https://user-images.githubusercontent.com/16523144/190527411-9fd2439e-3516-4199-97ef-9fda8fd733b3.png" width="100" height="100">
+</p>
 
 
 
+## Description
+
+### Objective
+
+This project creates a pipeline for processing and analyze the raw data scraped from the videogame digitial distribution platform [**Steam**](). The data is procesed in an **ELT** pipeline with the objective of provide insight about the best selling videogames since 2006. 
 
 
+### Dataset
 
+The dataset is originary from [**Kaggle**](), a repository of free datasets for data science. The dataset is composed as a mix of directly scraped records from **Steam** itself and [**Steamspy**]() a website dedicated to collect actual and speculative data about the former platform. All the files are enconded as raw jsons and need and extensive work of transformation in order to make then usable.
+
+### Tools & Technologies
+* Cloud - [**Google Cloud Platform**]()
+* Infraestructure as Code - [**Terraform**]()
+* Containerization - [**Docker**](), [**Docker Compose**]()
+* Orchestration - [**Airflow**]()
+* Transformation - [**dbt**]()
+* Data Lake - [**Google Cloud Storage**]()
+* Data Visualization - [**Data Studio**]()
+* Language - [**Python**]()
+
+### Architecture
+
+### Dashboard
+
+
+## Setup
+
+## Pre-requisites
+
+## Improvements
 
 ## Resources
 - https://www.kaggle.com/datasets/souyama/steam-dataset

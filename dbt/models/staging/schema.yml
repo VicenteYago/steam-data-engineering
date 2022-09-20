@@ -1,0 +1,137 @@
+version: 2
+
+sources : 
+    - name: staging
+      description: aaaa
+      database: steam-data-engineering-gcp
+      schema: steam_stg
+      tables: 
+        - name : steam_spy_scrap
+          columns:
+            - name: appid
+            - name: name 
+            - name: developer
+            - name: publisher
+            - name: score_rank
+            - name: negative
+            - name: positive
+            - name: userscore
+            - name: owners
+            - name: average_forever
+            - name: average_2weeks
+            - name: median_forever
+            - name: median_2weeks
+            - name: price
+            - name: initialprice
+            - name: discount
+            - name: ccu
+            - name: __null_dask_index__
+        - name : steam_store_data
+          columns : 
+            - name: type
+            - name: name
+            - name: steam_appid 
+            - name: required_age
+            - name: is_free
+            - name: dlc
+            - name: detailed_description
+            - name: about_the_game
+            - name: short_description
+            - name: supported_languages
+            - name: reviews
+            - name: header_image
+            - name: website
+            - name: pc_requirements
+            - name: mac_requirements
+            - name: linux_requirements
+            - name: developers
+            - name: publishers
+            - name: packages
+            - name: package_groups
+            - name: platforms
+            - name: metacritic
+            - name: categories
+            - name: genres
+            - name: screenshots
+            - name: movies
+            - name: recommendations
+            - name: release_date
+            - name: support_info
+            - name: background
+            - name: background_raw
+            - name: content_descriptors
+            - name: controller_support
+            - name: achievements
+            - name: legal_notice
+            - name: drm_notice
+            - name: price_overview
+            - name: ext_user_account_notice
+            - name: demos
+            - name: _null_dask_index__
+        - name: steam_dlc_data
+          columns: 
+            - name: type			
+            - name: name			
+            - name: steam_appid			
+            - name: required_age			
+            - name: is_free 	
+            - name: detailed_description			
+            - name: about_the_game			
+            - name: short_description 		
+            - name: fullgame			
+            - name: supported_languages		
+            - name: header_image				
+            - name: website			
+            - name: pc_requirements				
+            - name: mac_requirements				
+            - name: linux_requirements				
+            - name: legal_notice				
+            - name: developers				
+            - name: publishers			
+            - name: price_overview				
+            - name: packages			
+            - name: package_groups				
+            - name: platforms				
+            - name: categories 			
+            - name: genres		
+            - name: screenshots				
+            - name: release_date				
+            - name: support_info				
+            - name: background				
+            - name: background_raw			
+            - name: content_descriptors		
+            - name: recommendations			
+            - name: movies				
+            - name: controller_support			
+            - name: reviews				
+            - name: metacritic		
+            - name: drm_notice			
+            - name: demos					
+            - name: achievements					
+            - name: dlc					
+            - name: __null_dask_index__
+    - name: development
+      description: aaa
+      database: steam-data-engineering-gcp
+      schema: dbt_development
+      tables: 
+        - name : categories
+        - name : genres
+        - name : developers
+        - name : publishers
+models: 
+  - name: steam_spy_scrap
+  - name: steam_store_data
+    columns: 
+      - name: release_year
+        tests: 
+          - accepted_values: 
+              values: [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+              quote: false
+              severity: warn
+  - name: steam_dlc_data
+  - name: categories
+  - name: genres
+
+
+
