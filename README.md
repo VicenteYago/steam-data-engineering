@@ -31,6 +31,7 @@ The dataset is originary from [**Kaggle**](), a repository of free datasets for 
 
 ### Dashboard
 
+![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/dashboard.png)
 
 ## Setup
 
