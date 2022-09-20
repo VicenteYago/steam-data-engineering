@@ -35,5 +35,13 @@ models:
   steam_dbt_project:
     staging:
       materialized: view
+
     core: 
       materialized: table
+      +schema: performance
+
+    analysis: 
+      materialized: table
+      +schema: powerbi
+
+

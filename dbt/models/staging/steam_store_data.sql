@@ -9,7 +9,6 @@ SELECT
    SAFE_CAST(required_age as integer) as required_age,
    SAFE_CAST(is_free as BOOL) as is_free,
    developers.devs as developers,
-   --JSON_EXTRACT_STRING_ARRAY(publishers) as publishers,
 
    CAST(JSON_EXTRACT({{ fix_bools('platforms') }}, '$.windows') as boolean) as platform_windows,
    CAST(JSON_EXTRACT({{ fix_bools('platforms') }}, '$.mac') as boolean) as platform_mac,

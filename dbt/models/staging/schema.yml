@@ -2,7 +2,7 @@ version: 2
 
 sources : 
     - name: staging
-      description: ni idea de que poner en la descripcion
+      description: aaaa
       database: steam-data-engineering-gcp
       schema: steam_stg
       tables: 
@@ -111,7 +111,7 @@ sources :
             - name: dlc					
             - name: __null_dask_index__
     - name: development
-      description: ni idea de que poner en la descripcion
+      description: aaa
       database: steam-data-engineering-gcp
       schema: dbt_development
       tables: 
