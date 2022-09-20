@@ -24,13 +24,14 @@ The dataset is originary from [**Kaggle**](), a repository of free datasets for 
 * Orchestration - [**Airflow**]()
 * Transformation - [**dbt**]()
 * Data Lake - [**Google Cloud Storage**]()
-* Data Visualization - [**Data Studio**]()
+* Data Visualization - [**PowerBI**]()
 * Language - [**Python**]()
 
 ### Architecture
 
 ### Dashboard
 
+![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/dashboard.png)
 
 ## Setup
 
