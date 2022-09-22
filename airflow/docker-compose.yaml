@@ -68,7 +68,9 @@ x-airflow-common:
 
     # TODO: Please change GCP_PROJECT_ID & GCP_GCS_BUCKET, as per your config
     GCP_PROJECT_ID: 'steam-data-engineering-gcp'
-    GCP_GCS_BUCKET: 'steam-de-data-lake-bucket'
+    GCP_GCS_BUCKET_DATASET: 'steam-datalake-dataset'
+    GCP_GCS_BUCKET_REVIEWS: 'steam-datalake-reviews'
+    GCP_BQ_DATASET: 'steam_raw'
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
