@@ -28,6 +28,7 @@ The dataset is originary from [**Kaggle**](), a repository of free datasets for 
 * Language - [**Python**]()
 
 ### Architecture
+![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/steam.jpg)
 
 ### Dashboard
 
