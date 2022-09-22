@@ -40,4 +40,3 @@ The dataset is originary from [**Kaggle**](), a repository of free datasets for 
 ## Improvements
 
 ## Resources
-- https://www.kaggle.com/datasets/souyama/steam-dataset
