@@ -58,7 +58,7 @@ variable "gcp_bucket_dataset" {
 
 variable "gcp_bucket_reviews" {
   description = "Bucket name for storage steam appdata, steamspy & scraped"
-  default     = "steam-datalake-reviews-lite"
+  default     = "steam-datalake-reviews"
   type        = string
 }
 

@@ -66,9 +66,8 @@ x-airflow-common:
     GOOGLE_APPLICATION_CREDENTIALS: /.google/credentials/google_credentials.json
     AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?extra__google_cloud_platform__key_path=/.google/credentials/google_credentials.json'
 
-    # TODO: Please change GCP_PROJECT_ID & GCP_GCS_BUCKET, as per your config
     GCP_PROJECT_ID: 'steam-data-engineering-gcp'
-    GCP_GCS_BUCKET_DATASET: 'steam-datalake-dataset'
+    GCP_GCS_BUCKET_STORE: 'steam-datalake-store-alldata'
     GCP_GCS_BUCKET_REVIEWS: 'steam-datalake-reviews'
     GCP_BQ_DATASET: 'steam_raw'
   volumes:

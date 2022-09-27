@@ -1,4 +1,6 @@
 
+import sys
+import re
 from pyspark.sql import SparkSession
 from pyspark.conf import SparkConf
 from pyspark import SparkContext
@@ -7,7 +9,6 @@ from pyspark.sql import functions as F
 from pyspark.sql import Row
 from pyspark.sql.functions import row_number,lit
 from pyspark.sql.window import Window
-import re
 from pyspark.sql.types import StringType
 
 
@@ -35,62 +36,64 @@ extract_game_id = F.udf(
 )
 
 
+GCP_PROJECT_ID = sys.argv[1]
+BQ_DATASET     = sys.argv[2]
+BQ_TABLE       = sys.argv[3]
+BUCKET         = sys.argv[4] 
+BUCKET_SUBDIR  = sys.argv[5]
+TEMP_BUCKET    = sys.argv[6]
+
+def main():
+
+    conf = SparkConf() \
+        .setAppName('steam-gcp-dataproc') \
+        .set("spark.hadoop.google.cloud.auth.service.account.enable", "true") 
+
+    sc = SparkContext(conf=conf)
+
+    spark = SparkSession.builder \
+        .config(conf=sc.getConf()) \
+        .getOrCreate()
 
 
-BQ_JAR = "gs://spark-lib/bigquery/spark-3.1-bigquery-0.27.0-preview.jar"
-BQ_PROJECT_ID = "steam-data-engineering-gcp"
-BQ_DATASET = 'steam_raw'
-BQ_TABLE = 'reviews'
-TEMP_BUCKET = 'steam-datalake-dataset'
-BUCKET = "steam-datalake-reviews"
-BUCKET_SUBDIR = "proc"
+    # READ DATA
+    all_games = spark.read.json(f"gs://{BUCKET}/{BUCKET_SUBDIR}/*", multiLine=True) \
+                        .withColumn("filename", input_file_name())
+
+    rdd = all_games.rdd
+    rdd = rdd.repartition(5)
 
 
-conf = SparkConf() \
-    .setAppName('steam-gcp-dataproc') \
-    .set("spark.jars", f"{BQ_JAR}") \
-    .set("spark.hadoop.google.cloud.auth.service.account.enable", "true")
+    # REVIEWS
+    df_reviews = rdd.flatMap(lambda item : proc_json(item, field = "reviews")) \
+                    .toDF()
 
-sc = SparkContext(conf=conf)
+    # GAMEID
+    df_gameid = rdd.map(  lambda item : [ proc_json(item, field = "reviews"),
+                                        proc_json(item, field = "filename")] ) \
+                .flatMap(lambda item:  [item[1] for i in item[0] ]) \
+                .map(lambda item : Row(gameid  = item, )).toDF()
 
-spark = SparkSession.builder \
-    .config(conf=sc.getConf()) \
-    .getOrCreate()
+    df_gameid = df_gameid.withColumn('gameid', extract_game_id('gameid'))
+
+    # JOIN DATAFRAMES
+    w = Window().orderBy(lit('A'))
+    df_reviews = df_reviews.withColumn("row_num", row_number().over(w))
+    df_gameid = df_gameid.withColumn("row_num", row_number().over(w))
+
+    df_reviews = df_reviews.join(df_gameid, on = ["row_num"], how = "inner")
+
+    df_reviews_flat = flatten_df(df_reviews) 
+
+    # BIGQUERY WRITE
+    df_reviews_flat.write \
+    .format('bigquery') \
+    .option('table', f'{GCP_PROJECT_ID}.{BQ_DATASET}.{BQ_TABLE}') \
+    .mode("append") \
+    .option("temporaryGcsBucket",TEMP_BUCKET) \
+    .save()
 
 
-# READ DATA
-all_games = spark.read.json(f"gs://{BUCKET}/{BUCKET_SUBDIR}/*", multiLine=True) \
-                      .withColumn("filename", input_file_name())
 
-rdd = all_games.rdd
-rdd = rdd.repartition(5)
-
-
-# REVIEWS
-df_reviews = rdd.flatMap(lambda item : proc_json(item, field = "reviews")) \
-                .toDF()
-
-# GAMEID
-df_gameid = rdd.map(  lambda item : [ proc_json(item, field = "reviews"),
-                                      proc_json(item, field = "filename")] ) \
-               .flatMap(lambda item:  [item[1] for i in item[0] ]) \
-               .map(lambda item : Row(gameid  = item, )).toDF()
-
-df_gameid = df_gameid.withColumn('gameid', extract_game_id('gameid'))
-
-# JOIN DATAFRAMES
-w = Window().orderBy(lit('A'))
-df_reviews = df_reviews.withColumn("row_num", row_number().over(w))
-df_gameid = df_gameid.withColumn("row_num", row_number().over(w))
-
-df_reviews = df_reviews.join(df_gameid, on = ["row_num"], how = "inner")
-
-df_reviews_flat = flatten_df(df_reviews) 
-
-# BIGQUERY WRITE
-df_reviews_flat.write \
-  .format('bigquery') \
-  .option('table', f'{BQ_PROJECT_ID}.{BQ_DATASET}.{BQ_TABLE}') \
-  .mode("append") \
-  .option("temporaryGcsBucket",TEMP_BUCKET) \
-  .save()
+if __name__ == "__main__":
+    main()
