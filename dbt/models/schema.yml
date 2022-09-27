@@ -4,7 +4,7 @@ sources :
     - name: staging
       description: aaaa
       database: steam-data-engineering-gcp
-      schema: steam_stg
+      schema: steam_raw
       tables: 
         - name : steam_spy_scrap
           columns:
@@ -110,6 +110,7 @@ sources :
             - name: achievements					
             - name: dlc					
             - name: __null_dask_index__
+        - name: steam_reviews
     - name: development
       description: aaa
       database: steam-data-engineering-gcp
