@@ -22,6 +22,7 @@ The dataset is originary from [**Kaggle**](), a repository of free datasets for 
 * Infraestructure as Code - [**Terraform**]()
 * Containerization - [**Docker**](), [**Docker Compose**]()
 * Orchestration - [**Airflow**]()
+* Transformation - [**Spark**]()
 * Transformation - [**dbt**]()
 * Data Lake - [**Google Cloud Storage**]()
 * Data Visualization - [**PowerBI**]()
