@@ -22,6 +22,7 @@ The dataset is originary from [**Kaggle**](), a repository of free datasets for 
 * Infraestructure as Code - [**Terraform**]()
 * Containerization - [**Docker**](), [**Docker Compose**]()
 * Orchestration - [**Airflow**]()
+* Transformation - [**Spark**]()
 * Transformation - [**dbt**]()
 * Data Lake - [**Google Cloud Storage**]()
 * Data Visualization - [**PowerBI**]()
@@ -30,11 +31,16 @@ The dataset is originary from [**Kaggle**](), a repository of free datasets for 
 ### Architecture
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/steam.jpg)
 
+
+![Screenshot_20220927_025310](https://user-images.githubusercontent.com/16523144/192406654-1e1fe517-9bbd-4efe-9aea-6100d7169d64.png)
+
+
 ### Dashboard
 
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/dashboard.png)
 
 ## Setup
+
 
 ## Pre-requisites
 

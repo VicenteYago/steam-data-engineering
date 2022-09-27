@@ -27,6 +27,23 @@ variable "aws_conf" {
   type        = string
 }
 
+#--------------------------ADMIN VAULT----------------------#
+variable "name" { 
+  default = "dynamic-aws-creds-operator" 
+}
+
+variable "aws_vault_region" { 
+  default = "us-east-1" # change
+}
+
+variable "terraform_admin_path" { 
+  default = "../vault-admin-workspace/terraform.tfstate" 
+}
+
+variable "ttl" { 
+  default = "1" 
+}
+#------------------------------------------------#
 variable "region" {
   description = "Region for GCP resources. Choose as per your location: https://cloud.google.com/about/locations"
   default     = "europe-southwest1"
@@ -35,7 +52,7 @@ variable "region" {
 
 variable "gcp_bucket_dataset" {
   description = "Bucket name for storage steam appdata, steamspy & scraped"
-  default     = "steam-datalake-dataset"
+  default     = "steam-datalake-store-alldata"
   type        = string
 }
 
@@ -47,13 +64,13 @@ variable "gcp_bucket_reviews" {
 
 variable "aws_s3_bucket_dataset"{
   description = "S3 Bucket steam dataset"
-  default     = "steam-dataset"
+  default     = "steam-store-alldata"
   type        = string
 }
 
 variable "aws_s3_bucket_reviews"{
   description = "S3 Bucket steam reviews"
-  default     = "steam-reviews"
+  default     = "steam-reviews-lite" # !!!! Reduced version, "steam-reviews" full
   type        = string
 }
 
@@ -67,18 +84,3 @@ variable "gcp_bq_dataset_steam_raw" {
   default     = "steam_raw"
   type        = string
 }
-
-
-
-
-#variable "aws_access_key"{
-#  description = ""
-#  default     = "AKIAUTEF27PZPSBFSKFA"
-#  type        = string
-#}
-
-#variable "aws_secret_key"{ # TODO
-#  description = ""
-#  default     = "???"
-#  type        = string
-#}
