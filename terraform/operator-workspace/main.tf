@@ -1,6 +1,8 @@
 terraform {
   required_version = ">= 1.0"
-  backend "local" {} # Can change from "local" to "gcs" (for google) or "s3" (for aws), if you would like to preserve your tf-state online
+  backend "local" {
+        path = "terraform.tfstate"
+  } 
   required_providers {
     google = {
       source = "hashicorp/google"
@@ -14,11 +16,26 @@ provider "google" {
   credentials = file(var.gcp_credentials) # Use this if you do not want to set env-var GOOGLE_APPLICATION_CREDENTIALS
 }
 
-provider "aws" {
-  shared_config_files      = [var.aws_conf]
-  shared_credentials_files = [var.aws_credentials]
-  profile                  = "default"
+#--------------------------ADMIN VAULT----------------------#
+data "terraform_remote_state" "admin" {
+  backend = "local"
+
+  config = {
+    path = var.terraform_admin_path
+  }
 }
+
+data "vault_aws_access_credentials" "creds" {
+  backend = data.terraform_remote_state.admin.outputs.backend
+  role    = data.terraform_remote_state.admin.outputs.role
+}
+
+provider "aws" {
+  region     = var.aws_vault_region
+  access_key = data.vault_aws_access_credentials.creds.access_key
+  secret_key = data.vault_aws_access_credentials.creds.secret_key
+}
+#-----------------------------------------------------------#
 
 resource "google_storage_bucket" "steam-dataset" {
   name     =  var.gcp_bucket_dataset
@@ -107,8 +124,8 @@ resource "google_storage_transfer_job" "steam-dataset" {
     aws_s3_data_source {
       bucket_name = var.aws_s3_bucket_dataset
       aws_access_key {
-      access_key_id     = "AKIAUTEF27PZPSBFSKFA"                     # !! 
-      secret_access_key = "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" # !!
+      access_key_id     = data.vault_aws_access_credentials.creds.access_key # !! 
+      secret_access_key = data.vault_aws_access_credentials.creds.secret_key # !!
       }
 
     }
@@ -142,8 +159,8 @@ resource "google_storage_transfer_job" "steam-reviews" {
     aws_s3_data_source {
       bucket_name = var.aws_s3_bucket_reviews
       aws_access_key {
-      access_key_id     = "AKIAUTEF27PZPSBFSKFA"                     # !! 
-      secret_access_key = "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" # !!
+      access_key_id     = data.vault_aws_access_credentials.creds.access_key # !! 
+      secret_access_key = data.vault_aws_access_credentials.creds.secret_key # !!
       }
 
     }
