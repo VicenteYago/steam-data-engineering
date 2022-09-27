@@ -1,6 +1,8 @@
 # First-time build can take upto 10 mins.
 
-FROM apache/airflow:2.3.4
+#FROM apache/airflow:2.3.4
+
+FROM apache/airflow:2.3.4-python3.8
 
 ENV AIRFLOW_HOME=/opt/airflow
 
@@ -19,6 +21,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-e", "-u", "-x", "-c"]
 
 ARG CLOUD_SDK_VERSION=322.0.0
 ENV GCLOUD_HOME=/home/google-cloud-sdk
+ENV PYTHON_VERSION=3.8.13
 
 USER root
 ENV PATH="${GCLOUD_HOME}/bin/:${PATH}"
