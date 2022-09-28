@@ -37,8 +37,14 @@ Since the **reviews** datasets is ~ 40 GB and ~ 500k files a special processing 
 
 ## Dashboard
 
-![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/dashboard.png)
+For a more compacted visualization only games with metacritic score are displayed (3.5k out of 51k).
 
+![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/dashboard.png)
+ 
+ A note about **Revenue**: 
+ The revenue is calculated as a product of `owners * price`. This is a pretty naive approximation, see [Steamspy guidelines about "Owned" and "Sold" equivalence](https://steamspy.com/about).
+ 
+ 
 ## Orchestration
 
 The **DAG** has to main branches : 
