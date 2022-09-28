@@ -42,6 +42,13 @@ Since the **reviews** datasets is ~ 40 GB and ~ 500k files a special processing 
 ## Orchestration
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/airflow_graph.png)
 
+
+## Transformation
+
+### Spark
+
+### dbt
+
 ## Improvements
 
 ## Resources
