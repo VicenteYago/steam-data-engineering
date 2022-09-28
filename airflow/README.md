@@ -15,10 +15,13 @@
 
 ## **Config**
 
-1. Create `.google/credentials/google_credentials.json`
-2. Create `.dbt/profiles.yml`
+### dbt config necessary to run the final task 
+
+1. Create a service account in GCP and export credentials into `~/.google/credentials/google_credentials.json`
+2. Create `~/.dbt/profiles.yml`: 
 
 ```{yml}
+#profiles.yml
 default:
   target: dev
   outputs:
@@ -45,9 +48,11 @@ airflow:
 ```
 
 
+### Building the Airflow service
 
 - https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 
+Built & run : 
 ```{bash}
 sudo docker compose build --no-cache
 sudo docker compose up airflow-init
@@ -55,6 +60,7 @@ sudo docker compose up -d
 chmod 777 dbt
 ```
 
+Clean: 
 ```{bash}
 sudo docker compose down --volumes --rmi all
 ```
