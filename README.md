@@ -63,6 +63,8 @@ Both branches start by retrieving the respective data from the **GCS Buckets**, 
 
 ### dbt
 
+![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/lineage_dbt_1.png)
+
 ## Improvements
 
 ## Resources
