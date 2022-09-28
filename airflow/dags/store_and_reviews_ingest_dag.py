@@ -252,7 +252,6 @@ with DAG(
         bash_command=f"find {STEAM_STORE_LOCAL_DIR} -type d -name news_data -prune -exec rm -rf {{}} \; &&  find {STEAM_STORE_LOCAL_DIR} -type d -name steam_charts -prune -exec rm -rf {{}} \; && find {STEAM_STORE_LOCAL_DIR} -name 'missing.json' -delete"
     )
 
-
     upload_steam_dataset_proc_task = PythonOperator(
         task_id="upload_steam_dataset_proc_task",
         python_callable=upload_gcs,
@@ -261,7 +260,6 @@ with DAG(
             "local_dir": STEAM_STORE_LOCAL_DIR 
         }
     )
-
 
     hook = GCSHook()
     bq_parallel_tasks = list()
@@ -320,7 +318,6 @@ with DAG(
         project_id=PROJECT_ID
     )
     '''
-
     submit_spark_job_task = DataprocSubmitPySparkJobOperator(
         task_id = "submit_dataproc_spark_job_task",
         main = f"gs://{BUCKET_REVIEWS}/{PYSPARK_FILE}",
@@ -347,7 +344,7 @@ with DAG(
     #-------------------------------------------DBT
     run_dbt_task = BashOperator(
     task_id='run_dbt',
-    bash_command=f'ls -l {AIRFLOW_HOME}',
+    bash_command=f'cd /dbt && dbt run --profile airflow',
     trigger_rule="all_done"
     )
 
