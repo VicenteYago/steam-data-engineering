@@ -58,10 +58,19 @@ Both branches start by retrieving the respective data from the **GCS Buckets**, 
 
 
 ## Transformation
+Transformations are done with Spark (20%) and dbt (80%).
 
-### Spark
+### Spark 
 
-### dbt
+The spark job consists in process all 500k JSON files of reviews in a temporal **Dataproc** cluster and then write in a **Bigquery** table.
+
+### dbt 
+All the transformation for the steam store data is done in **dbt** using **SQL** intensively. The main table `steam_games` is built following the [google recommendations](https://cloud.google.com/blog/topics/developers-practitioners/bigquery-explained-working-joins-nested-repeated-data), i.e. is a **denormalized table** featuring nested an repeated structers to avoid the cost of performing joins.
+
+![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/lineage_dbt_1.png)
+
+In order to built the dashboard a custom unnested tables are also built from `steam_games`. 
+
 
 ## Improvements
 
