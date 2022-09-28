@@ -43,8 +43,8 @@ Since the **reviews** datasets is ~ 40 GB and ~ 500k files a special processing 
 
 The **DAG** has to main branches : 
 
-* Store branch : 
-* Reviews branch : 
+* **Store branch** : selected JSON files are converted into parquet and then loaded as tables in Bigquery in parallel
+* **Reviews branch** : JSON files are compacted before the cluster is created, then processed in dataproc and the results are injected into bigquery, where they are incorporated with the other data using dbt. 
 
 Both branches start by retrieving the respective data from the GCS Buckets, and they converge in the dbt task wich builds the definitive tables in BigQuery.
 
