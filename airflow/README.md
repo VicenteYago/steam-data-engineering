@@ -1,5 +1,36 @@
 # Airflow
 
+1. Create `.google/credentials/google_credentials.json`
+2. Create `.dbt/profiles.yml`
+
+```{yml}
+default:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: steam-data-engineering-gcp
+      dataset: dbt_development
+      threads: 1
+      keyfile: '/home/vyago/.google/credentials/google_credentials.json'
+      location: europe-southwest1
+
+airflow:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: steam-data-engineering-gcp
+      dataset: dbt_development
+      threads: 1
+      keyfile: '/.google/credentials/google_credentials.json'
+      location: europe-southwest1
+```
+
+
+
 - https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 
 ```{bash}
@@ -11,3 +42,5 @@ sudo docker compose up -d
 ```{bash}
 docker compose down --volumes --rmi all
 ```
+
+
