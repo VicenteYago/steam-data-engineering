@@ -2,12 +2,18 @@
 
 
 ## Description
+
+* **Execution graph (DAG)** : 
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/airflow_graph.png)
+
+* **Grid** : 
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/airflow_grid.png)
+
+* **Gantt** : 
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/airflow_gant.png)
 
 
-## Config 
+## **Config**
 
 1. Create `.google/credentials/google_credentials.json`
 2. Create `.dbt/profiles.yml`
