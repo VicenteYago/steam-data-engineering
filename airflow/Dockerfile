@@ -13,8 +13,8 @@ RUN apt-get update -qq && apt-get install vim -qqq && apt-get install unzip
 USER airflow
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-RUN mkdir ~/.kaggle/
-COPY .kaggle /home/airflow/.kaggle
+#RUN mkdir ~/.kaggle/
+#COPY .kaggle /home/airflow/.kaggle
 
 # Ref: https://airflow.apache.org/docs/docker-stack/recipes.html
 SHELL ["/bin/bash", "-o", "pipefail", "-e", "-u", "-x", "-c"]

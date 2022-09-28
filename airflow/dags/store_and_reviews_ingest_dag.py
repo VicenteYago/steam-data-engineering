@@ -344,7 +344,7 @@ with DAG(
     #-------------------------------------------DBT
     run_dbt_task = BashOperator(
     task_id='run_dbt',
-    bash_command=f'cd /dbt && dbt run --profile airflow',
+    bash_command=f'cd {AIRFLOW_HOME}dbt && dbt run --profile airflow',
     trigger_rule="all_done"
     )
 
