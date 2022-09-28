@@ -6,8 +6,6 @@
 
 
 
-
-
 ## Summary
 
 This project creates a pipeline for processing and analyze the raw data scraped from the videogame digitial distribution platform [**Steam**](). The data is procesed in an **ELT** pipeline with the objective of provide insight about the best selling videogames since 2006. 
@@ -42,7 +40,7 @@ Since the **reviews** datasets is ~ 40 GB and ~ 500k files a special processing 
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/dashboard.png)
 
 ## Orchestration
-
+![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/airflow_graph.png)
 
 ## Improvements
 
