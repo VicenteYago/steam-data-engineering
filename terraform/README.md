@@ -1,12 +1,18 @@
 # Terraform
 
+## Config
+
+The **Terraform** service uses **Vault** to safely provide temporal **AWS** credentials
+
 Install terraform, valut: 
 
 - https://learn.hashicorp.com/tutorials/terraform/install-cli
 - https://learn.hashicorp.com/tutorials/terraform/secrets-vault
 
 Start server:
+
 ```{bash}
+cd terraform
 vault server -dev -dev-root-token-id="steam"
 ```
 Export credentials
@@ -30,3 +36,15 @@ cd ../operator-workspace/
 terraform init
 terraform apply
 ```
+
+## Description
+`terraform apply` create de following resources: 
+- GCP bucket  `steam-datalake-store-alldata`
+- GCP bucket  `steam-datalake-reviews`
+- BigQuery dataset `steam_raw`
+- Storage transfer job from AWS from S3 bucket to GCP bucket `steam-datalake-store-alldata`
+- Storage transfer job from AWS from S3 bucket to GCP bucket `steam-datalake-reviews`
+
+
+
+
