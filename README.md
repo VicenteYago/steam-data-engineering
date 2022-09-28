@@ -33,7 +33,7 @@ To add more realism the datasets are placed in a **S3 bucket in AWS**. The **tra
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/steam.jpg)
 
 Since the **reviews** datasets is ~ 40 GB and ~ 500k files a special processing in **Spark** is performed. 
-
+The **Airflow** server is located in a vitual machine deployed in **Compute Engine GCP** .
 
 ## Dashboard
 
