@@ -1,5 +1,7 @@
 # Airflow
 
+## Config 
+
 1. Create `.google/credentials/google_credentials.json`
 2. Create `.dbt/profiles.yml`
 
