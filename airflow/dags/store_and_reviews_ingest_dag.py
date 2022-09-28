@@ -13,7 +13,7 @@ from airflow.providers.google.cloud.hooks.gcs import GCSHook
 from airflow.providers.google.cloud.operators.dataproc import DataprocDeleteClusterOperator
 from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
-from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitPySparkJobOperator \
+from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitPySparkJobOperator
                                                               
 
 
@@ -28,6 +28,7 @@ DATASETS_LOCAL_DIR = os.path.join(AIRFLOW_HOME, "datasets/")
 STEAM_STORE_LOCAL_DIR = os.path.join(DATASETS_LOCAL_DIR, "steamstore")
 REVIEWS_LOCAL_DIR = os.path.join(DATASETS_LOCAL_DIR, "reviews")
 REVIEWS_LOCAL_DIR_PROC = os.path.join(DATASETS_LOCAL_DIR, "reviews_proc")
+DBT_DIR = os.path.join(AIRFLOW_HOME, "dbt")
 
 BQ_TABLE = 'steam_reviews'
 TEMP_BUCKET = 'steam-datalake-store-alldata'
@@ -344,8 +345,8 @@ with DAG(
     #-------------------------------------------DBT
     run_dbt_task = BashOperator(
     task_id='run_dbt',
-    bash_command=f'cd {AIRFLOW_HOME}dbt && dbt run --profile airflow',
-    trigger_rule="all_done"
+    bash_command=f'cd {DBT_DIR} && dbt run --profile airflow',
+    trigger_rule="all_success"
     )
 
     download_steam_dataset_from_datalake_task >> format_to_parquet_inlocal_task >> rm_files_store_task >> upload_steam_dataset_proc_task >> bq_parallel_tasks >> rm_store_task >> run_dbt_task

@@ -11,7 +11,7 @@ variable "project" {
 
 variable "gcp_credentials" {
   description = "JSON service account credentials"
-  default     = "/home/vyago/.google/credentials/google_credentials.json"
+  default     = "/home/vyago-gcp/.google/credentials/google_credentials.json"
   type        = string
 }
 

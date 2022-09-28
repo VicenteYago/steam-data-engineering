@@ -46,7 +46,7 @@ resource "google_storage_bucket" "steam-dataset" {
   uniform_bucket_level_access = true
 
   versioning {
-    enabled = true
+    enabled = false
   }
 
   lifecycle_rule {
@@ -54,7 +54,7 @@ resource "google_storage_bucket" "steam-dataset" {
       type = "Delete"
     }
     condition {
-      age = 30 // days
+      age = 365 // days
     }
   }
 
@@ -70,7 +70,7 @@ resource "google_storage_bucket" "steam-reviews" {
   uniform_bucket_level_access = true
 
   versioning {
-    enabled = true
+    enabled = false
   }
 
   lifecycle_rule {
@@ -78,7 +78,7 @@ resource "google_storage_bucket" "steam-reviews" {
       type = "Delete"
     }
     condition {
-      age = 30 // days
+      age = 365 // days
     }
   }
 
