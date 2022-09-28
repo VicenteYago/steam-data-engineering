@@ -32,7 +32,7 @@ To add more realism the datasets are placed in a **S3 bucket in AWS**. The **tra
 
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/steam.jpg)
 
-Since the **reviews** datasets is ~ 40 GB and ~ 500k files a special processing in Spark is performed. 
+Since the **reviews** datasets is ~ 40 GB and ~ 500k files a special processing in **Spark** is performed. 
 
 
 ## Dashboard
@@ -43,10 +43,10 @@ Since the **reviews** datasets is ~ 40 GB and ~ 500k files a special processing 
 
 The **DAG** has to main branches : 
 
-* **Store branch** : selected JSON files are converted into parquet and then loaded as tables in Bigquery in parallel
-* **Reviews branch** : JSON files are compacted before the cluster is created, then processed in dataproc and the results are injected into bigquery, where they are incorporated with the other data using dbt. 
+* **Store branch** : selected JSON files are converted into parquet and then loaded as tables in **Bigquery** in parallel
+* **Reviews branch** : JSON files are compacted before the cluster is created, then processed in dataproc as a **pyspark job**. Finally the results are injected into **Bigquery**, where they are merged with other tables using **dbt**. Cluster creation and deletion is fully automated.
 
-Both branches start by retrieving the respective data from the GCS Buckets, and they converge in the dbt task wich builds the definitive tables in BigQuery.
+Both branches start by retrieving the respective data from the **GCS Buckets**, and they converge in the **dbt** task wich builds the definitive tables in **BigQuery**.
 
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/airflow_graph.png)
 
