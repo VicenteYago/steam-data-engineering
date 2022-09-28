@@ -1,5 +1,14 @@
 # Terraform
 
+## Description
+`terraform apply` create de following resources: 
+- GCP bucket  `steam-datalake-store-alldata`
+- GCP bucket  `steam-datalake-reviews`
+- BigQuery dataset `steam_raw`
+- Storage transfer job from AWS from S3 bucket to GCP bucket `steam-datalake-store-alldata`
+- Storage transfer job from AWS from S3 bucket to GCP bucket `steam-datalake-reviews`
+
+
 ## Config
 
 The **Terraform** service uses **Vault** to safely provide temporal **AWS** credentials
@@ -36,15 +45,6 @@ cd ../operator-workspace/
 terraform init
 terraform apply
 ```
-
-## Description
-`terraform apply` create de following resources: 
-- GCP bucket  `steam-datalake-store-alldata`
-- GCP bucket  `steam-datalake-reviews`
-- BigQuery dataset `steam_raw`
-- Storage transfer job from AWS from S3 bucket to GCP bucket `steam-datalake-store-alldata`
-- Storage transfer job from AWS from S3 bucket to GCP bucket `steam-datalake-reviews`
-
 
 
 
