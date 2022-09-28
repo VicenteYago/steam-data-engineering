@@ -1,5 +1,12 @@
 # Airflow
 
+
+## Description
+![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/airflow_graph.png)
+![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/airflow_grid.png)
+![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/airflow_gant.png)
+
+
 ## Config 
 
 1. Create `.google/credentials/google_credentials.json`
@@ -45,6 +52,3 @@ chmod 777 dbt
 ```{bash}
 sudo docker compose down --volumes --rmi all
 ```
-
-## Description
-
