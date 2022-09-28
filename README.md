@@ -28,7 +28,7 @@ The dataset is originary from [**Kaggle**](), a repository of free datasets for 
 
 ## Architecture
 
-To add more realism the datasets are placed in a **S3 bucket in AWS**.
+To add more realism the datasets are placed in a **S3 bucket in AWS**. The **trasfer from AWS to GCP** is done trough **Terraform** as part of the initialization tasks, a one-time operation. 
 
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/steam.jpg)
 
@@ -40,6 +40,14 @@ Since the **reviews** datasets is ~ 40 GB and ~ 500k files a special processing 
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/dashboard.png)
 
 ## Orchestration
+
+The **DAG** has to main branches : 
+
+* Store branch : 
+* Reviews branch : 
+
+Both branches start by retrieving the respective data from the GCS Buckets, and they converge in the dbt task wich builds the definitive tables in BigQuery.
+
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/airflow_graph.png)
 
 
