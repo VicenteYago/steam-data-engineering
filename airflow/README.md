@@ -40,7 +40,7 @@ sudo docker compose up -d
 ```
 
 ```{bash}
-docker compose down --volumes --rmi all
+sudo docker compose down --volumes --rmi all
 ```
 
 
