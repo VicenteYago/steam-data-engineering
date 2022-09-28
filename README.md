@@ -15,7 +15,7 @@ This project creates a pipeline for processing and analyze the raw data scraped 
 
 ### Dataset
 
-The dataset is originary from [**Kaggle**](), a repository of free datasets for data science. The dataset is composed as a mix of directly scraped records from **Steam** itself and [**Steamspy**]() a website dedicated to collect actual and speculative data about the former platform. All the files are enconded as raw jsons and need and extensive work of transformation in order to make then usable.
+The dataset is originary from [**Kaggle**](), a repository of free datasets for data science. The dataset is composed as a mix of directly scraped records from **Steam** itself and [**Steamspy**]() a website dedicated to collect actual and speculative data about the former platform. All the files are enconded as raw jsons and need and extensive work of transformation in order to make then usable. Additionally all the **reviews** for each game are also retrieved from [**another Kaggle dataset**]().
 
 ### Tools & Technologies
 * Cloud - [**Google Cloud Platform**]()
@@ -29,10 +29,12 @@ The dataset is originary from [**Kaggle**](), a repository of free datasets for 
 * Language - [**Python**]()
 
 ### Architecture
+
+To add more realism the datasets are placed in a **S3 bucket in AWS**.
+
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/steam.jpg)
 
-
-![Screenshot_20220927_025310](https://user-images.githubusercontent.com/16523144/192406654-1e1fe517-9bbd-4efe-9aea-6100d7169d64.png)
+Since the **reviews** datasets is ~ 40 GB and ~ 500k files a special processing in Spark is performed. 
 
 
 ### Dashboard
