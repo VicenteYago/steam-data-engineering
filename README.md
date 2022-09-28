@@ -65,7 +65,7 @@ Transformations are done with Spark (20%) and dbt (80%).
 The spark job consists in process all 500k JSON files of reviews in a temporal **Dataproc** cluster and then write in a **Bigquery** table.
 
 ### dbt 
-All the transformation for the steam store data is done in **dbt** using **SQL** intensively. The main table `steam_games` is built following the [google recommendations](https://cloud.google.com/blog/topics/developers-practitioners/bigquery-explained-working-joins-nested-repeated-data), i.e. is a denormalized table featuring nested an repeated structers to avoid the cost of performing joins.
+All the transformation for the steam store data is done in **dbt** using **SQL** intensively. The main table `steam_games` is built following the [google recommendations](https://cloud.google.com/blog/topics/developers-practitioners/bigquery-explained-working-joins-nested-repeated-data), i.e. is a **denormalized table** featuring nested an repeated structers to avoid the cost of performing joins.
 
 ![](https://github.com/VicenteYago/steam-data-engineering/blob/main/img/lineage_dbt_1.png)
 
