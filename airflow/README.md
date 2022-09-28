@@ -37,6 +37,7 @@ airflow:
 sudo docker compose build --no-cache
 sudo docker compose up airflow-init
 sudo docker compose up -d 
+chmod 777 dbt
 ```
 
 ```{bash}
