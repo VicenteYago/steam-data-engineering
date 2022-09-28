@@ -16,3 +16,17 @@ export TF_VAR_aws_secret_key=<AWS_SECRET_ACCESS_KEY>
 export VAULT_ADDR=http://127.0.0.1:8200
 export VAULT_TOKEN=steam
 ```
+
+Initialize admin workspace: 
+
+```{bash}
+cd vault-admin-workspace/
+terraform init
+terraform apply
+```
+Initialize admin workspace: 
+```{bash}
+cd ../operator-workspace/
+terraform init
+terraform apply
+```
