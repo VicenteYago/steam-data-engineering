@@ -73,5 +73,8 @@ In order to built the dashboard a custom unnested tables are also built from `st
 
 
 ## Improvements
+Ìn progres..
+
 
 ## Resources
+- https://datatalks.club/
