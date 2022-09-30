@@ -8,7 +8,7 @@
 
 ## Summary
 
-This project creates a pipeline for processing and analyze the raw data scraped from the videogame digitial distribution platform [**Steam**](). The data is procesed in an **ELT** pipeline with the objective of provide insight about the best selling videogames since 2006. 
+This project creates a pipeline for processing and analyze the raw data scraped from the videogame digitial distribution platform [**Steam**](https://store.steampowered.com/). The data is procesed in an **ELT** pipeline with the objective of provide insight about the best selling videogames since 2006. 
 
 
 ## Dataset
