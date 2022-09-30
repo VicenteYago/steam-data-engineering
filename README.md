@@ -25,7 +25,7 @@ The dataset is originary from [**Kaggle**](https://www.kaggle.com/datasets/souya
 * Data Lake - [**Google Cloud Storage**](https://cloud.google.com/storage)
 * Data Warehouse - [**BigQuery**](https://cloud.google.com/bigquery)
 * Data Visualization - [**PowerBI**](https://powerbi.microsoft.com/en-au/)
-* Language - **Python**
+* Languages - **Python**, **SQL**
 
 ## Architecture
 
