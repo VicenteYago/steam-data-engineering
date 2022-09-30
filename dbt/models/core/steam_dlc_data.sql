@@ -19,4 +19,4 @@ select
    CAST(REGEXP_EXTRACT(JSON_EXTRACT( {{ fix_bools('release_date') }}, '$.date'), r"(\d\d\d\d)") as integer) as release_year,
    CAST(JSON_EXTRACT(recommendations, "$.total")as integer)  as recommendations,
 
-from  {{source('staging', 'steam_dlc_data')}}
+from  {{source('raw', 'steam_dlc_data')}}

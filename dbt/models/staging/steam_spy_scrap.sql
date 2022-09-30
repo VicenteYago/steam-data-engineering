@@ -20,4 +20,4 @@ select
     SAFE_CAST(initialprice as decimal)/100 as initialprice,
     SAFE_CAST( REPLACE(discount, '.0', '' ) as integer) as discount_percentage,
     SAFE_CAST(ccu as integer) as ccu
-from  {{source('staging', 'steam_spy_scrap')}}
+from  {{source('raw', 'steam_spy_scrap')}}

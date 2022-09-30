@@ -1,4 +1,4 @@
-{{ config(materialized='view') }}
+{{ config(materialized='table') }}
 
 
 SELECT 
@@ -25,4 +25,4 @@ author_playtime_forever,
 author_playtime_last_two_weeks,			
 CAST(author_steamid as INTEGER) as author_steamid 
 
-from  {{source('staging', 'steam_reviews')}}
+from  {{source('raw', 'steam_reviews')}}
