@@ -5,7 +5,7 @@ select CAST(original.steam_appid as integer ) as appid,
                 id   ARRAY<INTEGER>> (ARRAY_AGG(fixed.genres_name),
                                       ARRAY_AGG(fixed.genres_id)) as genres
 
-FROM {{source('staging', 'steam_store_data')}} as original
+FROM {{source('raw', 'steam_store_data')}} as original
        JOIN 
             (
             select 
@@ -13,7 +13,7 @@ FROM {{source('staging', 'steam_store_data')}} as original
                 JSON_EXTRACT_SCALAR(genres, '$.description') as genres_name,
                 CAST( REGEXP_EXTRACT(genres, r"(\d+)") as integer) as genres_id 
 
-            from {{source('staging', 'steam_store_data')}},
+            from {{source('raw', 'steam_store_data')}},
                 unnest(json_query_array(genres)) as genres
             ) fixed ON original.steam_appid = fixed.steam_appid
 

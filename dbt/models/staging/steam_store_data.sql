@@ -33,11 +33,11 @@ FROM
    (
       (
          (
-            {{source('staging', 'steam_store_data')}} ssd LEFT JOIN
-            {{source('development', 'genres')}} genres ON CAST(ssd.steam_appid as integer) = genres.appid
-         )  LEFT JOIN {{source('development', 'developers')}} developers ON genres.appid = developers.appid  
-      )  LEFT JOIN {{source('development', 'categories')}} categories ON genres.appid = categories.appid
-   ) LEFT JOIN {{source('development', 'publishers')}} publishers ON categories.appid = publishers.appid
+            {{source('raw', 'steam_store_data')}} ssd LEFT JOIN
+            {{source('staging', 'genres')}} genres ON CAST(ssd.steam_appid as integer) = genres.appid
+         )  LEFT JOIN {{source('staging', 'developers')}} developers ON genres.appid = developers.appid  
+      )  LEFT JOIN {{source('staging', 'categories')}} categories ON genres.appid = categories.appid
+   ) LEFT JOIN {{source('staging', 'publishers')}} publishers ON categories.appid = publishers.appid
 
 
 
