@@ -72,9 +72,5 @@ All the transformation for the steam store data is done in **dbt** using **SQL**
 In order to built the dashboard a custom unnested tables are also built from `steam_games`. 
 
 
-## Improvements
-Ìn progress..
-
-
 ## Resources
 - https://datatalks.club/
