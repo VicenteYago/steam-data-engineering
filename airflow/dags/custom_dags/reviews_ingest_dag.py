@@ -17,6 +17,7 @@ from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClus
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
 from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitPySparkJobOperator
 
+
 sys.path.append("airflow/dags/common_package")                                                    
 from common_package.utils_module import *
 
@@ -37,7 +38,7 @@ BQ_TABLE = 'steam_reviews'
 TEMP_BUCKET = 'steam-datalake-store-alldata'
 JOB_ARGUMENTS = [PROJECT_ID, BIGQUERY_DATASET, BQ_TABLE, BUCKET_REVIEWS, BUCKET_SUBDIR_PROC, TEMP_BUCKET]
 
-CLUSTER_NAME = "steam-reviews-spark-cluster" #"spark-cluster-reviews"
+CLUSTER_NAME = "steam-reviews-spark-cluster"
 CLUSTER_REGION = "europe-west1"
 PYSPARK_FILE = "spark_all_games_reviews.py" # decouple in a separate (previous) task
 
@@ -54,18 +55,6 @@ CLUSTER_CONFIG = {
     },
 }
 
-'''
-PYSPARK_JOB = {
-    "reference": {"project_id": PROJECT_ID},
-    "placement": {"cluster_name": CLUSTER_NAME},
-    "pyspark_job": {"main_python_file_uri": f"gs://{BUCKET_REVIEWS}/{PYSPARK_FILE}",
-                    "jar_file_uris": ["gs://spark-lib/bigquery/spark-3.1-bigquery-0.27.0-preview.jar"]},
-    "arguments":JOB_ARGUMENTS
-
-}
-'''
-
-
 default_args = {
     "owner": "airflow",
     "start_date": days_ago(1),
@@ -74,7 +63,7 @@ default_args = {
 }
 
 with DAG(
-    dag_id="steam_store_ingestion_dag",
+    dag_id="steam_eviews_ingestion_dag",
     schedule_interval="@weekly",
     default_args=default_args,
     catchup=False,
@@ -82,62 +71,48 @@ with DAG(
     tags=['steam-de'],
 ) as dag:
 
-    #-------------------------------------------STORE    
-    download_steam_dataset_from_datalake_task = PythonOperator(
-        task_id="download_steam_dataset_from_datalake_task",
-        python_callable=download_gcs,
+    #-------------------------------------------REVIEWS
+
+    download_steam_reviews_from_datalake_task = PythonOperator(
+        task_id="download_steam_reviews_from_datalake_task",
+        python_callable=build_compacted_reviews_dataset,
         op_kwargs={
-            "bucket": BUCKET_STORE,
-            "local_dir": STEAM_STORE_LOCAL_DIR 
+            "bucket": BUCKET_REVIEWS,
+            "bucket_subdir": BUCKET_SUBDIR,
+            "reviews_local_dir" : REVIEWS_LOCAL_DIR,
+            "reviews_local_dir_proc" : REVIEWS_LOCAL_DIR_PROC
         }
     )
 
-    format_to_parquet_inlocal_task = PythonOperator(
-        task_id="format_to_parquet_inlocal_task",
-        python_callable=format_to_parquet,
-        op_kwargs={
-            "local_dir": STEAM_STORE_LOCAL_DIR
-        }
+    create_cluster_dataproc_task = DataprocCreateClusterOperator(
+        task_id="create_cluster_dataproc_task",
+        project_id=PROJECT_ID,
+        cluster_config=CLUSTER_CONFIG,
+        region=CLUSTER_REGION,
+        trigger_rule="all_success",
+        cluster_name=CLUSTER_NAME
     )
 
-    rm_files_store_task = BashOperator(
-        task_id="remove_needless_files_store_inlocal_task",
-        bash_command=f"find {STEAM_STORE_LOCAL_DIR} -type d -name news_data -prune -exec rm -rf {{}} \; &&  find {STEAM_STORE_LOCAL_DIR} -type d -name steam_charts -prune -exec rm -rf {{}} \; && find {STEAM_STORE_LOCAL_DIR} -name 'missing.json' -delete"
+    submit_spark_job_task = DataprocSubmitPySparkJobOperator(
+        task_id = "submit_dataproc_spark_job_task",
+        main = f"gs://{BUCKET_REVIEWS}/{PYSPARK_FILE}",
+        arguments = JOB_ARGUMENTS,
+        cluster_name = CLUSTER_NAME,
+        region = CLUSTER_REGION,
+        dataproc_jars = ["gs://spark-lib/bigquery/spark-3.1-bigquery-0.27.0-preview.jar"]
     )
 
-    upload_steam_dataset_proc_task = PythonOperator(
-        task_id="upload_steam_dataset_proc_task",
-        python_callable=upload_gcs,
-        op_kwargs={
-            "bucket": BUCKET_STORE,
-            "local_dir": STEAM_STORE_LOCAL_DIR 
-        }
+    delete_cluster_dataproc_task = DataprocDeleteClusterOperator(
+        task_id="delete_cluster_dataproc_task",
+        project_id=PROJECT_ID,
+        cluster_name=CLUSTER_NAME,
+        region=CLUSTER_REGION,
+        trigger_rule="all_done"
     )
 
-    hook = GCSHook()
-    bq_parallel_tasks = list()
-    gcs_objs_list = hook.list(bucket_name = BUCKET_STORE, prefix = "proc")
-    for obj in gcs_objs_list: 
-        TABLE_NAME = obj.split("/")[-2].replace('.parquet', '')
-        bigquery_external_table_task = BigQueryCreateExternalTableOperator(
-            task_id=f"bigquery_external_table_{TABLE_NAME}_task",
-            table_resource={
-                "tableReference": {
-                    "projectId": PROJECT_ID,
-                    "datasetId": BIGQUERY_DATASET,
-                    "tableId": TABLE_NAME,
-                },
-                "externalDataConfiguration": {
-                    "sourceFormat": "PARQUET",
-                    "sourceUris": [f"gs://{BUCKET_STORE}/{obj}"]
-                },
-            }
-        )
-        bq_parallel_tasks.append(bigquery_external_table_task)
-
-    rm_store_task = BashOperator(
-        task_id='remove_store_files_from_local',
-        bash_command=f'rm -rf {STEAM_STORE_LOCAL_DIR}',
+    rm_reviews_task = BashOperator(
+        task_id='remove_reviews_files_from_local',
+        bash_command=f'rm -rf {REVIEWS_LOCAL_DIR} {REVIEWS_LOCAL_DIR_PROC}',
         trigger_rule="all_done"
     )
 
@@ -148,4 +123,6 @@ with DAG(
     trigger_rule="all_success"
     )
 
-    download_steam_dataset_from_datalake_task >> format_to_parquet_inlocal_task >> rm_files_store_task >> upload_steam_dataset_proc_task >> bq_parallel_tasks >> rm_store_task >> run_dbt_task
+
+    download_steam_reviews_from_datalake_task >> create_cluster_dataproc_task >> submit_spark_job_task >> delete_cluster_dataproc_task >> rm_reviews_task >> run_dbt_task
+    

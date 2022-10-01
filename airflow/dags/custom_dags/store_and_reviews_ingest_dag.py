@@ -17,7 +17,6 @@ from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClus
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
 from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitPySparkJobOperator
 
-
 sys.path.append("airflow/dags/common_package")                                                    
 from common_package.utils_module import *
 
@@ -54,18 +53,6 @@ CLUSTER_CONFIG = {
         "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 50},
     },
 }
-
-'''
-PYSPARK_JOB = {
-    "reference": {"project_id": PROJECT_ID},
-    "placement": {"cluster_name": CLUSTER_NAME},
-    "pyspark_job": {"main_python_file_uri": f"gs://{BUCKET_REVIEWS}/{PYSPARK_FILE}",
-                    "jar_file_uris": ["gs://spark-lib/bigquery/spark-3.1-bigquery-0.27.0-preview.jar"]},
-    "arguments":JOB_ARGUMENTS
-
-}
-'''
-
 
 default_args = {
     "owner": "airflow",
@@ -164,14 +151,6 @@ with DAG(
         cluster_name=CLUSTER_NAME
     )
 
-    '''
-    submit_spark_job_task = DataprocSubmitJobOperator(
-        task_id="submit_spark_job_task",
-        job=PYSPARK_JOB,
-        region=CLUSTER_REGION,
-        project_id=PROJECT_ID
-    )
-    '''
     submit_spark_job_task = DataprocSubmitPySparkJobOperator(
         task_id = "submit_dataproc_spark_job_task",
         main = f"gs://{BUCKET_REVIEWS}/{PYSPARK_FILE}",

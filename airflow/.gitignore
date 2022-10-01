@@ -2,3 +2,5 @@ logs/
 plugins/
 dags/__pycache__
 .kaggle/kaggle.json
+dags/common_package/__pycache__
+dags/custom_dags/__pycache__
