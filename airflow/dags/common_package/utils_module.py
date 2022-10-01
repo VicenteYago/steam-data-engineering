@@ -1,14 +1,26 @@
 import os
 import json
 import glob
+import sys
 import dask.dataframe as dd
 from google.api_core import page_iterator
 from google.cloud import storage
 
+from airflow import DAG
+from airflow.utils.dates import days_ago
+from airflow.utils.dates import days_ago
+from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
+from airflow.providers.google.cloud.hooks.gcs import GCSHook
+from airflow.providers.google.cloud.operators.dataproc import DataprocDeleteClusterOperator
+from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator
+from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
+from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitPySparkJobOperator
+
+
 
 def download_gcs(bucket, local_dir, prefix=None):
 
-#    if not os.path.exists(local_dir):
 #        os.makedirs(local_dir)
 
     hook = GCSHook()

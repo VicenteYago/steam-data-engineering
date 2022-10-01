@@ -75,7 +75,7 @@ default_args = {
 }
 
 with DAG(
-    dag_id="steam_store_and_reviews_ingestion_dag",
+    dag_id="steam_store_ingestion_dag",
     schedule_interval="@weekly",
     default_args=default_args,
     catchup=False,
@@ -142,66 +142,4 @@ with DAG(
         trigger_rule="all_done"
     )
 
-    #-------------------------------------------REVIEWS
-
-    download_steam_reviews_from_datalake_task = PythonOperator(
-        task_id="download_steam_reviews_from_datalake_task",
-        python_callable=build_compacted_reviews_dataset,
-        op_kwargs={
-            "bucket": BUCKET_REVIEWS,
-            "bucket_subdir": BUCKET_SUBDIR,
-            "reviews_local_dir" : REVIEWS_LOCAL_DIR,
-            "reviews_local_dir_proc" : REVIEWS_LOCAL_DIR_PROC
-        }
-    )
-
-    create_cluster_dataproc_task = DataprocCreateClusterOperator(
-        task_id="create_cluster_dataproc_task",
-        project_id=PROJECT_ID,
-        cluster_config=CLUSTER_CONFIG,
-        region=CLUSTER_REGION,
-        trigger_rule="all_success",
-        cluster_name=CLUSTER_NAME
-    )
-
-    '''
-    submit_spark_job_task = DataprocSubmitJobOperator(
-        task_id="submit_spark_job_task",
-        job=PYSPARK_JOB,
-        region=CLUSTER_REGION,
-        project_id=PROJECT_ID
-    )
-    '''
-    submit_spark_job_task = DataprocSubmitPySparkJobOperator(
-        task_id = "submit_dataproc_spark_job_task",
-        main = f"gs://{BUCKET_REVIEWS}/{PYSPARK_FILE}",
-        arguments = JOB_ARGUMENTS,
-        cluster_name = CLUSTER_NAME,
-        region = CLUSTER_REGION,
-        dataproc_jars = ["gs://spark-lib/bigquery/spark-3.1-bigquery-0.27.0-preview.jar"]
-    )
-
-    delete_cluster_dataproc_task = DataprocDeleteClusterOperator(
-        task_id="delete_cluster_dataproc_task",
-        project_id=PROJECT_ID,
-        cluster_name=CLUSTER_NAME,
-        region=CLUSTER_REGION,
-        trigger_rule="all_done"
-    )
-
-    rm_reviews_task = BashOperator(
-        task_id='remove_reviews_files_from_local',
-        bash_command=f'rm -rf {REVIEWS_LOCAL_DIR} {REVIEWS_LOCAL_DIR_PROC}',
-        trigger_rule="all_done"
-    )
-
-    #-------------------------------------------DBT
-    run_dbt_task = BashOperator(
-    task_id='run_dbt',
-    bash_command=f'cd {DBT_DIR} && dbt run --profile airflow',
-    trigger_rule="all_success"
-    )
-
-    download_steam_dataset_from_datalake_task >> format_to_parquet_inlocal_task >> rm_files_store_task >> upload_steam_dataset_proc_task >> bq_parallel_tasks >> rm_store_task >> run_dbt_task
-    download_steam_reviews_from_datalake_task >> create_cluster_dataproc_task >> submit_spark_job_task >> delete_cluster_dataproc_task >> rm_reviews_task >> run_dbt_task
-    
+    download_steam_dataset_from_datalake_task >> format_to_parquet_inlocal_task >> rm_files_store_task >> upload_steam_dataset_proc_task >> bq_parallel_tasks >> rm_store_task
