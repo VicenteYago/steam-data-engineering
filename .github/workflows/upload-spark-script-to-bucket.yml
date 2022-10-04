@@ -6,7 +6,7 @@ on:
 
 jobs:
   job_id:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     permissions:  
       contents: 'read'
       id-token: 'write'
@@ -23,9 +23,3 @@ jobs:
       with:
         path: 'spark/spark_all_games_reviews.py'
         destination: 'gs://steam-datalake-reviews/spark_all_games_reviews.py'
-
-    # Example of using the output
-    - id: 'uploaded-files'
-      uses: 'foo/bar@main'
-      env:
-        file: '${{ steps.upload-file.outputs.uploaded }}'
