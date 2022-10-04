@@ -83,6 +83,7 @@ In the final stage of the pipeline, inside the **dbt** task some checks are perf
 - Add a cost analysis of a full pipeline run
 - extract more value from steam reviews --> new dashboard ? 
 - USE CASE: matrix factorization for recommendations
+- github action for upload spark script to bucket
 - More tests on the pipeline
 - Fully normalize the tables as exercise 
 
