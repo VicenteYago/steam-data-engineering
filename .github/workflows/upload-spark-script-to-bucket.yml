@@ -1,6 +1,13 @@
+name: Upload Spark script to GCP bucket
+on:
+  push:
+    branches:
+    - main
+
 jobs:
   job_id:
-    permissions:
+    runs-on: ubuntu-18.04
+    permissions:  
       contents: 'read'
       id-token: 'write'
 
