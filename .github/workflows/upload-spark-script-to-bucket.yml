@@ -17,9 +17,13 @@ jobs:
       with:
         workload_identity_provider: 'projects/146724372394/locations/global/workloadIdentityPools/wif-pool-steam-de/*'
         service_account: 'github-actions@steam-data-engineering-gcp.iam.gserviceaccount.com'
+    
+    - uses: 'google-github-actions/upload-cloud-storage@v0'
 
     - id: 'upload-file'
       uses: 'google-github-actions/upload-cloud-storage@v0'
       with:
         path: 'spark/spark_all_games_reviews.py'
         destination: 'gs://steam-datalake-reviews/spark_all_games_reviews.py'
+        
+    - uses: 'google-github-actions/upload-cloud-storage@v0'
