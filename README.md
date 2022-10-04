@@ -80,10 +80,12 @@ In the final stage of the pipeline, inside the **dbt** task some checks are perf
 * Checking for consistency of `release_date` column in table `steam_games`
 
 ## Improvements 
-- More tests on the pipeline
-- Fully normalize the tables as exercise 
 - Add a cost analysis of a full pipeline run
 - extract more value from steam reviews --> new dashboard ? 
+- USE CASE: matrix factorization for recommendations
+- More tests on the pipeline
+- Fully normalize the tables as exercise 
+
 
 ## Spetial Mentions
 Thanks to Alexey and his community from [datatalks club](https://datatalks.club/), create this project without the course of [Data Engineering](https://github.com/DataTalksClub/data-engineering-zoomcamp) would have been much more difficult.  
