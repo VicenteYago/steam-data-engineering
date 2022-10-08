@@ -12,15 +12,14 @@ jobs:
       id-token: 'write'
 
     steps:
-
+    - name: checkout
+      uses: actions/checkout@v2
+      
     - name: auth
       uses: 'google-github-actions/auth@v0'
       with:
         workload_identity_provider: 'projects/146724372394/locations/global/workloadIdentityPools/wif-pool-steam-de/*'
         service_account: 'github-actions@steam-data-engineering-gcp.iam.gserviceaccount.com' 
-        
-    - name: checkout
-      uses: actions/checkout@v2
 
     - name: check dir  
       run: ls spark/  
