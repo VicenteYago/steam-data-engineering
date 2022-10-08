@@ -17,9 +17,6 @@ jobs:
       with:
         workload_identity_provider: 'projects/146724372394/locations/global/workloadIdentityPools/wif-pool-steam-de/*'
         service_account: 'github-actions@steam-data-engineering-gcp.iam.gserviceaccount.com' 
-
-    - name: check dir  
-      run: ls spark/  
     
     - name: upload-file
       uses: 'google-github-actions/upload-cloud-storage@v0'
