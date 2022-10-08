@@ -5,23 +5,28 @@ on:
     - main
 
 jobs:
-  job_id:
+  upload_spark_script:
     runs-on: ubuntu-20.04
     permissions:  
       contents: 'read'
       id-token: 'write'
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - id: 'auth'
+
+    - name: 'auth'
       uses: 'google-github-actions/auth@v0'
       with:
         workload_identity_provider: 'projects/146724372394/locations/global/workloadIdentityPools/wif-pool-steam-de/*'
-        service_account: 'github-actions@steam-data-engineering-gcp.iam.gserviceaccount.com'
-    
-    - id: 'upload-file'
+        service_account: 'github-actions@steam-data-engineering-gcp.iam.gserviceaccount.com' 
+        
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: 'upload-file'
       uses: 'google-github-actions/upload-cloud-storage@v0'
       with:
         path: '../spark/spark_all_games_reviews.py'
         destination: 'gs://steam-datalake-reviews/spark_all_games_reviews.py'
+        
+    - name: 'check dir'  
+      run: ls ../spark/       
