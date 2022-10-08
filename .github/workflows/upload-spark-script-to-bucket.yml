@@ -23,7 +23,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: check dir  
-      run: ls ../spark/  
+      run: ls spark/  
     
     - name: upload-file
       uses: 'google-github-actions/upload-cloud-storage@v0'
