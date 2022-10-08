@@ -10,7 +10,8 @@ jobs:
     permissions:  
       contents: 'read'
       id-token: 'write'
-      
+    
+    steps:
     - name: auth
       uses: 'google-github-actions/auth@v0'
       with:
