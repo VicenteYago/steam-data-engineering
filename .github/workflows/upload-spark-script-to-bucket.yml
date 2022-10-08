@@ -5,6 +5,7 @@ on:
     - main
 
 jobs:
+
   upload_spark_script:
     runs-on: ubuntu-20.04
     permissions:  
