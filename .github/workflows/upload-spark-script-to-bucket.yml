@@ -29,6 +29,6 @@ jobs:
       uses: 'google-github-actions/upload-cloud-storage@v0'
       with:
         path: 'spark/spark_all_games_reviews.py'
-        destination: 'gs://steam-datalake-reviews/spark_all_games_reviews.py'
+        destination: 'gs://steam-datalake-reviews/'
         
      
