@@ -26,5 +26,3 @@ jobs:
       with:
         path: 'spark/spark_all_games_reviews.py'
         destination: 'steam-datalake-reviews/'
-        
-     
