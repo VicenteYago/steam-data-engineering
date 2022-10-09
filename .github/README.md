@@ -2,20 +2,20 @@
 - https://github.com/google-github-actions/auth
 
 ```{bash}
-export PROJECT_ID="my-project" # update with your value
+export PROJECT_ID="steam-data-engineering-gcp" # update with your value
 
-gcloud iam service-accounts create "my-service-account" \
+gcloud iam service-accounts create "github-actions-service-account" \
   --project "${PROJECT_ID}"
 
 gcloud services enable iamcredentials.googleapis.com \
   --project "${PROJECT_ID}"
   
-gcloud iam workload-identity-pools create "my-pool" \
+gcloud iam workload-identity-pools create "github-action-pool" \
   --project="${PROJECT_ID}" \
   --location="global" \
-  --display-name="Demo pool"
+  --display-name="Github Actions pool"
   
-gcloud iam workload-identity-pools describe "my-pool" \
+gcloud iam workload-identity-pools describe "github-action-pool" \
   --project="${PROJECT_ID}" \
   --location="global" \
   --format="value(name)"
@@ -26,11 +26,11 @@ export WORKLOAD_IDENTITY_POOL_ID="..." # value from above
 ```
 
 ```{bash}
-gcloud iam workload-identity-pools providers create-oidc "my-provider" \
+gcloud iam workload-identity-pools providers create-oidc "github-action-provider" \
   --project="${PROJECT_ID}" \
   --location="global" \
-  --workload-identity-pool="my-pool" \
-  --display-name="Demo provider" \
+  --workload-identity-pool="github-action-pool" \
+  --display-name="Github Action provider" \
   --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository" \
   --issuer-uri="https://token.actions.githubusercontent.com"
 ```
