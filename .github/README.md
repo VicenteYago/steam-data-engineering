@@ -58,3 +58,13 @@ gcloud iam workload-identity-pools providers describe "github-action-provider" \
 * `projects/146724372394/locations/global/workloadIdentityPools/github-action-pool/providers/github-action-provider`
 * `github-actions-service-account@steam-data-engineering-gcp.iam.gserviceaccount.com`
 
+
+
+```{bash}
+gcloud iam service-accounts add-iam-policy-binding "github-actions-service-account@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --project="${PROJECT_ID}" \
+  --role="roles/iam.workloadIdentityUser" \
+  --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_ID}/attribute.repository/${REPO}"
+```
+
+
