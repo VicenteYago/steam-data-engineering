@@ -22,7 +22,7 @@ gcloud iam workload-identity-pools describe "github-action-pool" \
 ```
 
 ```{bash}
-export WORKLOAD_IDENTITY_POOL_ID="..." # value from above
+export WORKLOAD_IDENTITY_POOL_ID="projects/146724372394/locations/global/workloadIdentityPools/github-action-pool"
 ```
 
 ```{bash}
