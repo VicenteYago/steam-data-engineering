@@ -1,0 +1,128 @@
+import os
+import json
+import glob
+import sys
+import dask.dataframe as dd
+from google.api_core import page_iterator
+from google.cloud import storage
+
+from airflow import DAG
+from airflow.utils.dates import days_ago
+from airflow.utils.dates import days_ago
+from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
+from airflow.providers.google.cloud.hooks.gcs import GCSHook
+from airflow.providers.google.cloud.operators.dataproc import DataprocDeleteClusterOperator
+from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator
+from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
+from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitPySparkJobOperator
+
+
+sys.path.append("airflow/dags/common_package")                                                    
+from common_package.utils_module import *
+
+AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
+BUCKET_STORE = os.environ.get("GCP_GCS_BUCKET_STORE")
+BUCKET_REVIEWS = os.environ.get("GCP_GCS_BUCKET_REVIEWS")
+BUCKET_SUBDIR = "raw"
+BUCKET_SUBDIR_PROC = "proc"
+BIGQUERY_DATASET = os.environ.get('GCP_BQ_DATASET')
+DATASETS_LOCAL_DIR = os.path.join(AIRFLOW_HOME, "datasets/") 
+STEAM_STORE_LOCAL_DIR = os.path.join(DATASETS_LOCAL_DIR, "steamstore")
+REVIEWS_LOCAL_DIR = os.path.join(DATASETS_LOCAL_DIR, "reviews")
+REVIEWS_LOCAL_DIR_PROC = os.path.join(DATASETS_LOCAL_DIR, "reviews_proc")
+DBT_DIR = os.path.join(AIRFLOW_HOME, "dbt")
+
+BQ_TABLE = 'steam_reviews'
+TEMP_BUCKET = 'steam-datalake-store-alldata'
+JOB_ARGUMENTS = [PROJECT_ID, BIGQUERY_DATASET, BQ_TABLE, BUCKET_REVIEWS, BUCKET_SUBDIR_PROC, TEMP_BUCKET]
+
+CLUSTER_NAME = "steam-reviews-spark-cluster"
+CLUSTER_REGION = "europe-west1"
+PYSPARK_FILE = "spark_all_games_reviews.py" # decouple in a separate (previous) task
+
+CLUSTER_CONFIG = {
+    "master_config": {
+        "num_instances": 1,
+        "machine_type_uri": "n1-standard-2",
+        "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 50},
+    },
+    "worker_config": {
+        "num_instances": 2,
+        "machine_type_uri": "n1-standard-2",
+        "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 50},
+    },
+}
+
+default_args = {
+    "owner": "airflow",
+    "start_date": days_ago(1),
+    "depends_on_past": False,
+    "retries": 1,
+}
+
+with DAG(
+    dag_id="steam_eviews_ingestion_dag",
+    schedule_interval="@weekly",
+    default_args=default_args,
+    catchup=False,
+    max_active_runs=1,
+    tags=['steam-de'],
+) as dag:
+
+    #-------------------------------------------REVIEWS
+
+    download_steam_reviews_from_datalake_task = PythonOperator(
+        task_id="download_steam_reviews_from_datalake_task",
+        python_callable=build_compacted_reviews_dataset,
+        op_kwargs={
+            "bucket": BUCKET_REVIEWS,
+            "bucket_subdir": BUCKET_SUBDIR,
+            "reviews_local_dir" : REVIEWS_LOCAL_DIR,
+            "reviews_local_dir_proc" : REVIEWS_LOCAL_DIR_PROC
+        }
+    )
+
+    create_cluster_dataproc_task = DataprocCreateClusterOperator(
+        task_id="create_cluster_dataproc_task",
+        project_id=PROJECT_ID,
+        cluster_config=CLUSTER_CONFIG,
+        region=CLUSTER_REGION,
+        trigger_rule="all_success",
+        cluster_name=CLUSTER_NAME
+    )
+
+    submit_spark_job_task = DataprocSubmitPySparkJobOperator(
+        task_id = "submit_dataproc_spark_job_task",
+        main = f"gs://{BUCKET_REVIEWS}/{PYSPARK_FILE}",
+        arguments = JOB_ARGUMENTS,
+        cluster_name = CLUSTER_NAME,
+        region = CLUSTER_REGION,
+        dataproc_jars = ["gs://spark-lib/bigquery/spark-3.1-bigquery-0.27.0-preview.jar"]
+    )
+
+    delete_cluster_dataproc_task = DataprocDeleteClusterOperator(
+        task_id="delete_cluster_dataproc_task",
+        project_id=PROJECT_ID,
+        cluster_name=CLUSTER_NAME,
+        region=CLUSTER_REGION,
+        trigger_rule="all_done"
+    )
+
+    rm_reviews_task = BashOperator(
+        task_id='remove_reviews_files_from_local',
+        bash_command=f'rm -rf {REVIEWS_LOCAL_DIR} {REVIEWS_LOCAL_DIR_PROC}',
+        trigger_rule="all_done"
+    )
+
+    #-------------------------------------------DBT
+    run_dbt_task = BashOperator(
+    task_id='run_dbt',
+    bash_command=f'cd {DBT_DIR} && dbt run --profile airflow',
+    trigger_rule="all_success"
+    )
+
+
+    download_steam_reviews_from_datalake_task >> create_cluster_dataproc_task >> submit_spark_job_task >> delete_cluster_dataproc_task >> rm_reviews_task >> run_dbt_task
+    
