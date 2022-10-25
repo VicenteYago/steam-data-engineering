@@ -80,7 +80,7 @@ In the final stage of the pipeline, inside the **dbt** task some checks are perf
 * Checking for consistency of `release_date` column in table `steam_games`
 
 ## Improvements 
-- partition core tables, for performance
+- ~partition core tables, for performance~
 - Add a cost analysis of a full pipeline run
 - extract more value from steam reviews --> new dashboard ? 
 - USE CASE: matrix factorization for recommendations
