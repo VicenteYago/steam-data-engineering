@@ -1,5 +1,15 @@
-{{ config(materialized='table') }}
-
+{{ config(
+    materialized='table',
+    partition_by={
+      "field": "release_year",
+      "data_type": "int64",
+      "range": {
+        "start": 1997,
+        "end": 2023,
+        "interval": 3
+      }
+    }
+)}}
 
 
 SELECT steam_store_data.appid,
