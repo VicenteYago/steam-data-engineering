@@ -45,6 +45,10 @@ models:
       - name: gameid
         tests: 
           - not_null
+      - name: reviewid
+        tests: 
+          - not_null
+          - unique
 
   - name: steam_dlc_data
     columns:
