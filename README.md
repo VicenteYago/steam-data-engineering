@@ -89,5 +89,5 @@ In the final stage of the pipeline, inside the **dbt** task some checks are perf
 - Fully normalize the tables as exercise 
 
 
-## Spetial Mentions
+## Special Mentions
 Thanks to Alexey and his community from [datatalks club](https://datatalks.club/), create this project without the course of [Data Engineering](https://github.com/DataTalksClub/data-engineering-zoomcamp) would have been much more difficult.  
